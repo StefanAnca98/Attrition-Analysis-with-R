@@ -366,6 +366,112 @@ on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http:
 the result from exporting it to HTML. The markdown file will have a
 plain text format, but the HTML file will have a nice formatted
 aspect.</p>
+<p>El objetivo de este proyecto será el de describir y explicar como se
+da el abandono laboral. Concretamente se buscarán asociaciones entre
+distintas variables y el abandono del empleo, para poder describir con
+precisión cuando este se da, y poder establecer las posibles
+explicaciones de este fenómeno. Se utilizarán multiples técnicas de
+manipulación de variables, limpieza de datos, exploración de los mismos,
+y modelos de agrupamiento para intentar dilucidar grupos concretos. El
+objetivo principal es el de explorar el funcionamiento de los algoritmos
+y mostrar formas de trabajar con datos, más que el de crear un modelo
+infalible. Para este segundo objetivo, podrían ser necesarias multiples
+iteraciones de distintas acciones realizadas en este script hasta
+encontrar la configuración de acciones más óptima.</p>
+</div>
+<div id="seleccionar-un-juego-de-datos-y-justificar-su-elección." class="section level2">
+<h2>2. Seleccionar un juego de datos y justificar su elección.</h2>
+<p>El juego de datos seleccionado ha sido un dataset del ámbito de la
+gestión de recursos humanos. El nombre del dataset es “Employee
+Attrition and Factors”, lo que en Español significaría “Rotación de
+empleados y factores”. En el mismo cada registro corresponde a un
+empleado específico de la empresa. Este dispone algunas variables
+demográficas como la edad, o el nivel de educación alcanzado (entre
+otras). Así mismo, dispone de múltiples variables que describen el
+puesto de trabajo, como son la frecuencia de viajes realizados por el
+trabajo, el departamento en el que el empleado trabaja, o la distancia
+entre el lugar de trabajo y el domicilio del empleado. Por tanto, en
+este dataset hay datos que permiten analizar el fenómeno del abandono
+laboral tanto desde una perspectiva laboral como desde una personal, lo
+que lo hace idóneo para cumplir con el objetivo que hemos propuesto
+inicialmente de describir y explicar el abandono laboral.</p>
+<p>El dataset cuenta con 1470 observaciones, y 35 variables, habiendo
+varias variables binarias, más de 2 categóricas, y muchas más de 5
+numéricas, por tanto cumple el requisito mínimo del enunciado. El
+dataset lo he encontrado en kaggle, a continuación muestro un enlace al
+mismo: <a href="https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors" class="uri">https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors</a></p>
+<p>A continuación mostramos un diccionario de las variables que hay en
+el dataset, en el que mostremos su significado, y que tipo de variable
+es cada una de ellas. Tanto el significado como el tipo de variable se
+ha obtenido a partir del enlace de descarga del dataset.</p>
+<p><strong>Age</strong>: La edad del empleado. (Numérica)</p>
+<p><strong>Attrition</strong>: Si el empleado ha dejado o no la
+organización. (Categórica)</p>
+<p><strong>BusinessTravel</strong>: La frecuencia de viajes de negocios
+del empleado. (Categórica)</p>
+<p><strong>DailyRate</strong>: La tarifa diaria de pago para el
+empleado. (Numérica)</p>
+<p><strong>Department</strong>: El departamento en el que trabaja el
+empleado. (Categórica)</p>
+<p><strong>DistanceFromHome</strong>: La distancia desde casa en millas
+para el empleado. (Numérica)</p>
+<p><strong>Education</strong>: El nivel de educación alcanzado por el
+empleado. (Categórica)</p>
+<p><strong>EducationField</strong>: El campo de estudio de la educación
+del empleado. (Categórica)</p>
+<p><strong>EmployeeCount</strong>: El número total de empleados en la
+organización. (Numérica)</p>
+<p><strong>EmployeeNumber</strong>: Un identificador único para cada
+perfil de empleado. (Numérica)</p>
+<p><strong>EnvironmentSatisfaction</strong>: La satisfacción del
+empleado con su entorno laboral. (Categórica)</p>
+<p><strong>Gender</strong>: El género del empleado. (Categórica)</p>
+<p><strong>HourlyRate</strong>: La tarifa por hora de pago para el
+empleado. (Numérica)</p>
+<p><strong>JobInvolvement</strong>: El nivel de involucramiento
+requerido para el trabajo del empleado. (Categórica)</p>
+<p><strong>JobLevel</strong>: El nivel de empleo del empleado.
+(Categórica)</p>
+<p><strong>JobRole</strong>: El rol del empleado en la organización.
+(Categórica)</p>
+<p><strong>JobSatisfaction</strong>: La satisfacción del empleado con su
+trabajo. (Categórica)</p>
+<p><strong>MaritalStatus</strong>: El estado civil del empleado.
+(Categórica)</p>
+<p><strong>MonthlyIncome</strong>: El ingreso mensual del empleado.
+(Numérica)</p>
+<p><strong>MonthlyRate</strong>: La tarifa mensual de pago para el
+empleado. (Numérica)</p>
+<p><strong>NumCompaniesWorked</strong>: El número de empresas para las
+que ha trabajado el empleado. (Numérica)</p>
+<p><strong>Over18</strong>: Si el empleado es o no mayor de 18 años.
+(Categórica)</p>
+<p><strong>OverTime</strong>: Si el empleado trabaja o no horas extra.
+(Categórica)</p>
+<p><strong>PercentSalaryHike</strong>: El porcentaje de aumento de
+salario del empleado. (Numérica)</p>
+<p><strong>PerformanceRating</strong>: La evaluación de rendimiento del
+empleado. (Categórica)</p>
+<p><strong>RelationshipSatisfaction</strong>: La satisfacción del
+empleado con sus relaciones. (Categórica)</p>
+<p><strong>StandardHours</strong>: Las horas de trabajo estándar para el
+empleado. (Numérica)</p>
+<p><strong>StockOptionLevel</strong>: El nivel de opción de acciones del
+empleado. (Numérica)</p>
+<p><strong>TotalWorkingYears</strong>: El número total de años que el
+empleado ha trabajado. (Numérica)</p>
+<p><strong>TrainingTimesLastYear</strong>: El número de veces que el
+empleado fue llevado a capacitación en el último año. (Numérica)</p>
+<p><strong>WorkLifeBalance</strong>: La percepción del empleado de su
+equilibrio entre vida laboral y personal. (Categórica)</p>
+<p><strong>YearsAtCompany</strong>: El número de años que el empleado ha
+estado en la compañía. (Numérica)</p>
+<p><strong>YearsInCurrentRole</strong>: El número de años que el
+empleado ha estado en su rol actual. (Numérica)</p>
+<p><strong>YearsSinceLastPromotion</strong>: El número de años desde la
+última promoción del empleado. (Numérica)</p>
+<p><strong>YearsWithCurrManager</strong>: El número de años que el
+empleado ha estado con su gerente actual. (Numérica)</p>
 </div>
 
 
