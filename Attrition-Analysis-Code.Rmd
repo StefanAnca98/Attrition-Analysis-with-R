@@ -1,0 +1,120 @@
+---
+title: "Attrition-Analysis"
+author: "Stefan"
+date: "2024-08-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+In this project I will keep available this Markdown file, and also the result from exporting it to HTML. The markdown file will have a plain text format, but the HTML file will have a nice formatted aspect.
+
+The objective of this project will be to describe and explain how job abandonment occurs. Specifically, associations between different variables and job abandonment will be sought in order to describe when this occurs and to establish possible explanations for the phenomenon. Multiple techniques will be used for variable manipulation, data cleaning, data exploration, and clustering models to try to identify specific groups. The main goal is to explore the functioning of the algorithms and demonstrate ways of working with data, rather than creating the best model. For this secondary objective, multiple iterations of different actions performed in this script may be necessary for finding the best model.
+
+
+## Dataset description
+
+The selected dataset comes from the field of human resource management. The name of the dataset is "Employee Attrition and Factors". Each row corresponds to a specific employee of the company and includes some demographic variables such as age and education level (among others) containing additionally multiple variables describing the job position, such as the frequency of work-related travel, the department in which the employee works, and the distance between the workplace and the employee's home. Therefore, this dataset provides data that allows for the analysis of job abandonment from both a professional and personal perspective, making it ideal for the initial objective of describing and explaining job abandonment.
+
+The dataset is available in Kaeggle: https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors
+
+The name and meaning/description of the variables are presented below:
+
+
+**Age**: The age of the employee. (Numerical)
+
+**Attrition**: Whether or not the employee has left the organization. (Categorical)
+
+**BusinessTravel**: The frequency of business travel for the employee. (Categorical)
+  
+**DailyRate**: The daily rate of pay for the employee. (Numerical)
+
+**Department**: The department the employee works in. (Categorical)
+
+**DistanceFromHome**: The distance from home in miles for the employee. (Numerical)
+
+**Education**: The level of education achieved by the employee. (Categorical)
+    
+**EducationField**: The field of study for the employee's education. (Categorical)
+
+**EmployeeCount**: The total number of employees in the organization. (Numerical)
+    
+**EmployeeNumber**: A unique identifier for each employee profile. (Numerical)
+
+**EnvironmentSatisfaction**: The employee's satisfaction with their work environment. (Categorical)
+    
+**Gender**: The gender of the employee. (Categorical)
+
+**HourlyRate**: The hourly rate of pay for the employee. (Numerical)
+    
+**JobInvolvement**: The level of involvement required for the employee's job. (Categorical)
+    
+**JobLevel**: The job level of the employee. (Categorical)
+  
+**JobRole**: The role of the employee in the organization. (Categorical)
+    
+**JobSatisfaction**: The employee's satisfaction with their job. (Categorical)
+    
+**MaritalStatus**: The marital status of the employee. (Categorical)
+    
+**MonthlyIncome**: The monthly income of the employee. (Numerical)
+    
+**MonthlyRate**: The monthly rate of pay for the employee. (Numerical)
+  
+**NumCompaniesWorked**: The number of companies the employee has worked for. (Numerical)
+  
+**Over18**: Whether or not the employee is over 18. (Categorical)
+
+**OverTime**: Whether or not the employee works overtime. (Categorical)
+
+**PercentSalaryHike**: The percentage of salary hike for the employee. (Numerical)
+
+**PerformanceRating**: The performance rating of the employee. (Categorical)
+
+**RelationshipSatisfaction**: The employee's satisfaction with their relationships. (Categorical)
+    
+**StandardHours**: The standard hours of work for the employee. (Numerical)
+
+**StockOptionLevel**: The stock option level of the employee. (Numerical)
+
+**TotalWorkingYears**: The total number of years the employee has worked. (Numerical)
+
+**TrainingTimesLastYear**: The number of times the employee was taken for training in the last year. (Numerical)
+    
+**WorkLifeBalance**: The employee's perception of their work-life balance. (Categorical)
+
+**YearsAtCompany**: The number of years the employee has been with the company. (Numerical)
+    
+**YearsInCurrentRole**: The number of years the employee has been in their current role. (Numerical)
+
+**YearsSinceLastPromotion**: The number of years since the employee's last promotion. (Numerical)
+    
+**YearsWithCurrManager**: The number of years the employee has been with their current manager. (Numerical)
+
+## Exploratory Data Analysis (EDA)
+
+```{r}
+# Load the data
+HR_data <- read.csv("WokingAttrition.csv")
+
+# Show how many variables of each class there are
+table(sapply(HR_data, class))
+```
+
+Since we have multiple variables in the dataset, we will try to make the exploratory analysis more manageable. First, we will focus on the character variables, and then on the numeric variables.
+
+```{r}
+# Using "sapply" we get a vector showing which columns are character
+columnas_char <- sapply(HR_data, class) == "character"
+# We save in a dataframe the character variables
+character_var <- HR_data[columnas_char]
+# We show their names
+colnames(character_var)
+```
+

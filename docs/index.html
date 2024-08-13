@@ -366,112 +366,126 @@ on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http:
 the result from exporting it to HTML. The markdown file will have a
 plain text format, but the HTML file will have a nice formatted
 aspect.</p>
-<p>El objetivo de este proyecto será el de describir y explicar como se
-da el abandono laboral. Concretamente se buscarán asociaciones entre
-distintas variables y el abandono del empleo, para poder describir con
-precisión cuando este se da, y poder establecer las posibles
-explicaciones de este fenómeno. Se utilizarán multiples técnicas de
-manipulación de variables, limpieza de datos, exploración de los mismos,
-y modelos de agrupamiento para intentar dilucidar grupos concretos. El
-objetivo principal es el de explorar el funcionamiento de los algoritmos
-y mostrar formas de trabajar con datos, más que el de crear un modelo
-infalible. Para este segundo objetivo, podrían ser necesarias multiples
-iteraciones de distintas acciones realizadas en este script hasta
-encontrar la configuración de acciones más óptima.</p>
+<p>The objective of this project will be to describe and explain how job
+abandonment occurs. Specifically, associations between different
+variables and job abandonment will be sought in order to describe when
+this occurs and to establish possible explanations for the phenomenon.
+Multiple techniques will be used for variable manipulation, data
+cleaning, data exploration, and clustering models to try to identify
+specific groups. The main goal is to explore the functioning of the
+algorithms and demonstrate ways of working with data, rather than
+creating the best model. For this secondary objective, multiple
+iterations of different actions performed in this script may be
+necessary for finding the best model.</p>
 </div>
-<div id="seleccionar-un-juego-de-datos-y-justificar-su-elección." class="section level2">
-<h2>2. Seleccionar un juego de datos y justificar su elección.</h2>
-<p>El juego de datos seleccionado ha sido un dataset del ámbito de la
-gestión de recursos humanos. El nombre del dataset es “Employee
-Attrition and Factors”, lo que en Español significaría “Rotación de
-empleados y factores”. En el mismo cada registro corresponde a un
-empleado específico de la empresa. Este dispone algunas variables
-demográficas como la edad, o el nivel de educación alcanzado (entre
-otras). Así mismo, dispone de múltiples variables que describen el
-puesto de trabajo, como son la frecuencia de viajes realizados por el
-trabajo, el departamento en el que el empleado trabaja, o la distancia
-entre el lugar de trabajo y el domicilio del empleado. Por tanto, en
-este dataset hay datos que permiten analizar el fenómeno del abandono
-laboral tanto desde una perspectiva laboral como desde una personal, lo
-que lo hace idóneo para cumplir con el objetivo que hemos propuesto
-inicialmente de describir y explicar el abandono laboral.</p>
-<p>El dataset cuenta con 1470 observaciones, y 35 variables, habiendo
-varias variables binarias, más de 2 categóricas, y muchas más de 5
-numéricas, por tanto cumple el requisito mínimo del enunciado. El
-dataset lo he encontrado en kaggle, a continuación muestro un enlace al
-mismo: <a href="https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors" class="uri">https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors</a></p>
-<p>A continuación mostramos un diccionario de las variables que hay en
-el dataset, en el que mostremos su significado, y que tipo de variable
-es cada una de ellas. Tanto el significado como el tipo de variable se
-ha obtenido a partir del enlace de descarga del dataset.</p>
-<p><strong>Age</strong>: La edad del empleado. (Numérica)</p>
-<p><strong>Attrition</strong>: Si el empleado ha dejado o no la
-organización. (Categórica)</p>
-<p><strong>BusinessTravel</strong>: La frecuencia de viajes de negocios
-del empleado. (Categórica)</p>
-<p><strong>DailyRate</strong>: La tarifa diaria de pago para el
-empleado. (Numérica)</p>
-<p><strong>Department</strong>: El departamento en el que trabaja el
-empleado. (Categórica)</p>
-<p><strong>DistanceFromHome</strong>: La distancia desde casa en millas
-para el empleado. (Numérica)</p>
-<p><strong>Education</strong>: El nivel de educación alcanzado por el
-empleado. (Categórica)</p>
-<p><strong>EducationField</strong>: El campo de estudio de la educación
-del empleado. (Categórica)</p>
-<p><strong>EmployeeCount</strong>: El número total de empleados en la
-organización. (Numérica)</p>
-<p><strong>EmployeeNumber</strong>: Un identificador único para cada
-perfil de empleado. (Numérica)</p>
-<p><strong>EnvironmentSatisfaction</strong>: La satisfacción del
-empleado con su entorno laboral. (Categórica)</p>
-<p><strong>Gender</strong>: El género del empleado. (Categórica)</p>
-<p><strong>HourlyRate</strong>: La tarifa por hora de pago para el
-empleado. (Numérica)</p>
-<p><strong>JobInvolvement</strong>: El nivel de involucramiento
-requerido para el trabajo del empleado. (Categórica)</p>
-<p><strong>JobLevel</strong>: El nivel de empleo del empleado.
-(Categórica)</p>
-<p><strong>JobRole</strong>: El rol del empleado en la organización.
-(Categórica)</p>
-<p><strong>JobSatisfaction</strong>: La satisfacción del empleado con su
-trabajo. (Categórica)</p>
-<p><strong>MaritalStatus</strong>: El estado civil del empleado.
-(Categórica)</p>
-<p><strong>MonthlyIncome</strong>: El ingreso mensual del empleado.
-(Numérica)</p>
-<p><strong>MonthlyRate</strong>: La tarifa mensual de pago para el
-empleado. (Numérica)</p>
-<p><strong>NumCompaniesWorked</strong>: El número de empresas para las
-que ha trabajado el empleado. (Numérica)</p>
-<p><strong>Over18</strong>: Si el empleado es o no mayor de 18 años.
-(Categórica)</p>
-<p><strong>OverTime</strong>: Si el empleado trabaja o no horas extra.
-(Categórica)</p>
-<p><strong>PercentSalaryHike</strong>: El porcentaje de aumento de
-salario del empleado. (Numérica)</p>
-<p><strong>PerformanceRating</strong>: La evaluación de rendimiento del
-empleado. (Categórica)</p>
-<p><strong>RelationshipSatisfaction</strong>: La satisfacción del
-empleado con sus relaciones. (Categórica)</p>
-<p><strong>StandardHours</strong>: Las horas de trabajo estándar para el
-empleado. (Numérica)</p>
-<p><strong>StockOptionLevel</strong>: El nivel de opción de acciones del
-empleado. (Numérica)</p>
-<p><strong>TotalWorkingYears</strong>: El número total de años que el
-empleado ha trabajado. (Numérica)</p>
-<p><strong>TrainingTimesLastYear</strong>: El número de veces que el
-empleado fue llevado a capacitación en el último año. (Numérica)</p>
-<p><strong>WorkLifeBalance</strong>: La percepción del empleado de su
-equilibrio entre vida laboral y personal. (Categórica)</p>
-<p><strong>YearsAtCompany</strong>: El número de años que el empleado ha
-estado en la compañía. (Numérica)</p>
-<p><strong>YearsInCurrentRole</strong>: El número de años que el
-empleado ha estado en su rol actual. (Numérica)</p>
-<p><strong>YearsSinceLastPromotion</strong>: El número de años desde la
-última promoción del empleado. (Numérica)</p>
-<p><strong>YearsWithCurrManager</strong>: El número de años que el
-empleado ha estado con su gerente actual. (Numérica)</p>
+<div id="dataset-description" class="section level2">
+<h2>Dataset description</h2>
+<p>The selected dataset comes from the field of human resource
+management. The name of the dataset is “Employee Attrition and Factors”.
+Each row corresponds to a specific employee of the company and includes
+some demographic variables such as age and education level (among
+others) containing additionally multiple variables describing the job
+position, such as the frequency of work-related travel, the department
+in which the employee works, and the distance between the workplace and
+the employee’s home. Therefore, this dataset provides data that allows
+for the analysis of job abandonment from both a professional and
+personal perspective, making it ideal for the initial objective of
+describing and explaining job abandonment.</p>
+<p>The dataset is available in Kaeggle: <a href="https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors" class="uri">https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors</a></p>
+<p>The name and meaning/description of the variables are presented
+below:</p>
+<p><strong>Age</strong>: The age of the employee. (Numerical)</p>
+<p><strong>Attrition</strong>: Whether or not the employee has left the
+organization. (Categorical)</p>
+<p><strong>BusinessTravel</strong>: The frequency of business travel for
+the employee. (Categorical)</p>
+<p><strong>DailyRate</strong>: The daily rate of pay for the employee.
+(Numerical)</p>
+<p><strong>Department</strong>: The department the employee works in.
+(Categorical)</p>
+<p><strong>DistanceFromHome</strong>: The distance from home in miles
+for the employee. (Numerical)</p>
+<p><strong>Education</strong>: The level of education achieved by the
+employee. (Categorical)</p>
+<p><strong>EducationField</strong>: The field of study for the
+employee’s education. (Categorical)</p>
+<p><strong>EmployeeCount</strong>: The total number of employees in the
+organization. (Numerical)</p>
+<p><strong>EmployeeNumber</strong>: A unique identifier for each
+employee profile. (Numerical)</p>
+<p><strong>EnvironmentSatisfaction</strong>: The employee’s satisfaction
+with their work environment. (Categorical)</p>
+<p><strong>Gender</strong>: The gender of the employee.
+(Categorical)</p>
+<p><strong>HourlyRate</strong>: The hourly rate of pay for the employee.
+(Numerical)</p>
+<p><strong>JobInvolvement</strong>: The level of involvement required
+for the employee’s job. (Categorical)</p>
+<p><strong>JobLevel</strong>: The job level of the employee.
+(Categorical)</p>
+<p><strong>JobRole</strong>: The role of the employee in the
+organization. (Categorical)</p>
+<p><strong>JobSatisfaction</strong>: The employee’s satisfaction with
+their job. (Categorical)</p>
+<p><strong>MaritalStatus</strong>: The marital status of the employee.
+(Categorical)</p>
+<p><strong>MonthlyIncome</strong>: The monthly income of the employee.
+(Numerical)</p>
+<p><strong>MonthlyRate</strong>: The monthly rate of pay for the
+employee. (Numerical)</p>
+<p><strong>NumCompaniesWorked</strong>: The number of companies the
+employee has worked for. (Numerical)</p>
+<p><strong>Over18</strong>: Whether or not the employee is over 18.
+(Categorical)</p>
+<p><strong>OverTime</strong>: Whether or not the employee works
+overtime. (Categorical)</p>
+<p><strong>PercentSalaryHike</strong>: The percentage of salary hike for
+the employee. (Numerical)</p>
+<p><strong>PerformanceRating</strong>: The performance rating of the
+employee. (Categorical)</p>
+<p><strong>RelationshipSatisfaction</strong>: The employee’s
+satisfaction with their relationships. (Categorical)</p>
+<p><strong>StandardHours</strong>: The standard hours of work for the
+employee. (Numerical)</p>
+<p><strong>StockOptionLevel</strong>: The stock option level of the
+employee. (Numerical)</p>
+<p><strong>TotalWorkingYears</strong>: The total number of years the
+employee has worked. (Numerical)</p>
+<p><strong>TrainingTimesLastYear</strong>: The number of times the
+employee was taken for training in the last year. (Numerical)</p>
+<p><strong>WorkLifeBalance</strong>: The employee’s perception of their
+work-life balance. (Categorical)</p>
+<p><strong>YearsAtCompany</strong>: The number of years the employee has
+been with the company. (Numerical)</p>
+<p><strong>YearsInCurrentRole</strong>: The number of years the employee
+has been in their current role. (Numerical)</p>
+<p><strong>YearsSinceLastPromotion</strong>: The number of years since
+the employee’s last promotion. (Numerical)</p>
+<p><strong>YearsWithCurrManager</strong>: The number of years the
+employee has been with their current manager. (Numerical)</p>
+</div>
+<div id="exploratory-data-analysis-eda" class="section level2">
+<h2>Exploratory Data Analysis (EDA)</h2>
+<pre class="r"><code># Load the data
+HR_data &lt;- read.csv(&quot;WokingAttrition.csv&quot;)
+
+# Show how many variables of each class there are
+table(sapply(HR_data, class))</code></pre>
+<pre><code>## 
+## character   integer 
+##         9        26</code></pre>
+<p>Since we have multiple variables in the dataset, we will try to make
+the exploratory analysis more manageable. First, we will focus on the
+character variables, and then on the numeric variables.</p>
+<pre class="r"><code># Using &quot;sapply&quot; we get a vector showing which columns are character
+columnas_char &lt;- sapply(HR_data, class) == &quot;character&quot;
+# We save in a dataframe the character variables
+character_var &lt;- HR_data[columnas_char]
+# We show their names
+colnames(character_var)</code></pre>
+<pre><code>## [1] &quot;Attrition&quot;      &quot;BusinessTravel&quot; &quot;Department&quot;     &quot;EducationField&quot;
+## [5] &quot;Gender&quot;         &quot;JobRole&quot;        &quot;MaritalStatus&quot;  &quot;Over18&quot;        
+## [9] &quot;OverTime&quot;</code></pre>
 </div>
 
 
