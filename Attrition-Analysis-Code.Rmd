@@ -1,0 +1,19 @@
+---
+title: "Attrition-Analysis"
+author: "Stefan"
+date: "2024-08-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+In this project I will keep available this Markdown file, and also the result from exporting it to HTML. The markdown file will have a plain text format, but the HTML file will have a nice formatted aspect.
+
+
+
