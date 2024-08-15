@@ -107,14 +107,536 @@ HR_data <- read.csv("WokingAttrition.csv")
 table(sapply(HR_data, class))
 ```
 
-Since we have multiple variables in the dataset, we will try to make the exploratory analysis more manageable. First, we will focus on the character variables, and then on the numeric variables.
+Since we have multiple variables in the dataset, we will try to make the exploratory analysis more manageable. First, we will focus on the character variables, and after on the numeric variables.
 
 ```{r}
 # Using "sapply" we get a vector showing which columns are character
-columnas_char <- sapply(HR_data, class) == "character"
+char_columns <- sapply(HR_data, class) == "character"
 # We save in a dataframe the character variables
-character_var <- HR_data[columnas_char]
+character_var <- HR_data[char_columns]
 # We show their names
 colnames(character_var)
 ```
 
+```{r}
+# We show the number of unique values of each variable
+sapply(character_var, function(x) length(unique(x)))
+```
+
+Only with the number of unique values we can observe some interesting things. First, "Over18" has only 1 unique value. In addition, there are multiple variables with only 2 or 3 unique values, and just 2 variable have more than 3 unique values. We will explore this variables starting from those that have less unique values to those that have more.
+
+```{r}
+# First we will show the unique value of the variable "Over18"
+unique(HR_data$Over18)
+```
+
+We can see that the unique value is "Y". This indicates that all individuals are adults. In the data cleaning process, we will discard this variable, as is a constant that we already know from this point about the dataset.
+
+Now, we will make a graphical representation of the variables with 2 and 3 unique values.
+
+```{r}
+# We load some packages necesary for the visualisation and data manipulation
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+# We save in a data frame the variable with 2 or 3 unique values
+data_2_3_unique <- HR_data[c("Attrition", "Gender", "OverTime", "BusinessTravel", "Department", "MaritalStatus")]
+
+# We transform this data to a long format
+data_long <- data_2_3_unique %>% 
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Category") %>%
+  count(Variable, Category) %>% #We count how many times appear each category of each variable
+  group_by(Variable) %>% # We group by variable
+  mutate(Prop=n/sum(n)) # We calculate the proportion of each category
+
+# We show the result
+data_long
+```
+
+**Graphical representation**
+
+Now we are going to represent this data graphicaly. On the x-axis, will be included each variable, and on the y-axis, the height represents the proportion of each category. For each variable, we will fill the figure based on the proportion that each category appears within the variable. We will create a bar chart using the values displayed in the dataframe.
+
+```{r}
+# Initialization of ggplot graph
+ggplot(data_long, aes(x = Variable, y = Prop, fill = Category)) +
+  geom_bar(stat = "identity") +
+  # Text is added to axes, title, and for each category represented
+  geom_text(aes(label = paste0(Category, "\n", round(Prop * 100, 1), "%")), 
+            position = position_stack(vjust = 0.6), size=3) +
+  labs(y = "Proportion", title = "Proportion of values of the variables with 2 or 3 unique values") +
+  # The legend text will have an angle
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 20, hjust = 1),
+  )
+```
+
+In this chart we can observe several things. First, for binary variables, in all cases, one of the variables is somewhat or significantly more dominant than the others (the proportion is not close to 50/50 in any case). On the other hand, regarding the variables with 3 categories, several aspects can also be considered. First, in the 'Department' variable, there are only 3 unique values. This indicates that the sample is not representative of all types of jobs that might exist, but rather that it likely comes from a specific sector (since most of the workers in the sample are in the Research and Development department). Additionally, the 'Human Resources' category is underrepresented (only 4.3% of the cases). Regarding 'BusinessTravel,' we see a clear predominance of people who rarely travel over those who travel frequently or do not travel at all. Finally, concerning the 'MaritalStatus' variable, there is some balance between the proportions of the 3 categories, with only a slight predominance of the 'Married' category.
+
+After analyzing the character variables with little unique values, we will analyse the others character variables.
+
+```{r}
+# We save in a dataframe the character variables that we didn't analysed
+rest_character_var <- HR_data[c("EducationField" ,"JobRole")]
+
+# We will se a frequency table for each variable
+data.frame(table(rest_character_var[1]))
+data.frame(table(rest_character_var[2]))
+```
+
+We see that for both variables, the categories are limited to a really speciffic field. It seems as though this data is related to the healthcare sector, and includes some complementary departments like Marketing or Human Resources. The number of employees in each category varies significantly across all categories.
+
+Once the analysis with the variables stored as "character" in the dataset is complete, we will start analyzing the numeric variables. First we will analyze some variables that were marked as categorical in the previously created variable dictionary, but which we did not find among the character class variables, specifically:
+
+Education, EnvironmentSatisfaction, JobInvolvement, JobLevel, JobSatisfaction.
+
+```{r}
+# We create a vector of characters containing the name of these variables
+names <- c("Education", "EnvironmentSatisfaction", "JobInvolvement", "JobLevel", "JobSatisfaction")
+# We create a data frame which includes only these variables using the vector
+df_aux <- HR_data[names]
+
+# We observe the structure of this data frame
+str(df_aux)
+```
+
+We see that in all these cases, these are variables whose values are encoded as numbers, but on the download page, they are recorded as categorical. Therefore, the numbers probably represent categories whose values we cannot necessarily treat as continuous. Given the names and descriptions of the variables, we should probably interpret these values as ordinal. In other words, with these variables, we can determine in which observation there are higher levels of a certain variable, but we cannot make arithmetic comparisons between the different levels (for example, we cannot say that it presents double the amount of a specific variable).
+
+We will create an histogram in order to understand how this variables are
+
+```{r}
+par(mfrow = c(1,2))
+# We iterate over the names of the auxiliar data frame previously created
+for (var in colnames(df_aux)) {
+  # An histogram is created for each iterated variable
+  hist(df_aux[[var]], main = var)
+}
+```
+
+If we look at the histogram, we don't find anything unusual. For all the values of the variables, there are bars with a minimum number of observations so that they are identifiable. The only issue we could point out is that since there are no labels showing the meaning of each value, we cannot distinguish whether the maximum and minimum values are the theoretical of the variable, or just the maximums/minimums within this sample. In other words, it could be the case that these variables could have been scored above or below the maximums/minimums shown, but this values weren't in this sample. Since the download page doesn't provide clarifications about the range these variables can take, we can't be certain about this. To address this issue, when we will prepare the data, we will create some variables from these to allow us to establish clear differences between the subjects if we use these variables.
+
+Now we will analyse the rest of the numeric variables.
+
+```{r}
+# We create a dataframe with only the numeric variables
+numeric_var <- HR_data[sapply(HR_data, FUN=is.numeric)]
+# We exclude the ones that were truly categorical but were marked as numeric.
+indices_to_eliminate <- match(names, names(numeric_var))
+numeric_var <- numeric_var[-indices_to_eliminate]
+
+# We make a summary of these variables
+summary(numeric_var)
+```
+
+There are several things we can observe in this summary; let's start handling them one by one.
+
+**- Variables with the same value in all observations:**
+
+There are two cases where this occurs: EmployeeCount and StandardHours.
+
+In the data cleaning step of this data mining process, we will discard these variables since they are not useful for model development (because there is no variability in their values, making it impossible to distinguish cases using these variables).
+
+**- Other variables that also seem ordinal rather than quantitative:**
+
+The variables shown in this summary that appear to be ordinal are: RelationshipSatisfaction, WorkLifeBalance, PerformanceRating, StockOptionLevel.
+
+In all these cases, the maximum and minimum values are between 0 and 4. Additionally, all summary statistics, except for the mean, are integers, and if we consider their names and definitions, in none of the cases can the values be interpreted as a specific quantity of a magnitude (the names do not refer to specific physical objects that can be measured directly). This leads us to suspect that their values are indeed ordinal.
+
+Next, we will display histograms of all these variables to see their distributions.
+
+```{r}
+par(mfrow=c(1,2))
+# We save in a vector the names of these variables
+ordinal_names <- c("RelationshipSatisfaction", "WorkLifeBalance", "PerformanceRating", "StockOptionLevel")
+# We iterate over these names
+for (name in ordinal_names) {
+  # For each name, an histogram is created with the column of the dataset with tha same name
+  hist(numeric_var[[name]], main = name)
+}
+# We also get the number of unique values of each variable
+sapply(numeric_var[ordinal_names], function(x) length(unique(x)))
+```
+
+We can see that their values are discrete since each one has the same number of unique values as bars in the histogram. They seem to be values from a questionnaire or some index with a score that is always an integer. Therefore, we encounter the same issue as before: we don't know if the minimum and maximum observed in this sample are the true minimum and maximum values that these variables can take, or if they could actually have higher or lower values. Additionally, we do not know the exact meaning of each level of the categories of these variables. Therefore, when using these variables in analyses, we must be cautious about the specific interpretations made about the meaning of their magnitudes.
+
+The rest of the quantitative variables do not seem to have any peculiarities that would lead us to think they should be excluded or that they are actually categorical. Let's analyze them graphically.
+
+```{r}
+# We create a vector with tha names of all the cuantitative variables that we already observed.
+analysed_variables <- c("EmployeeCount","StandardHours","EmployeeNumber", ordinal_names)
+
+# We save in a vector the indexes of this columns in the "numeric_var" data frame
+observed_indexes <- match(analysed_variables, names(numeric_var))
+
+# We create other data frame which will not include these variables
+not_observed_numeric <- numeric_var[-observed_indexes]
+
+# We will visualize these variables using boxplots
+
+# We will show them 5 by 5
+par(mfrow=c(1,5))
+# We iterate over tha names of the columns
+for (var in colnames(not_observed_numeric)) {
+  # And create a boxplot for each variable
+  boxplot(not_observed_numeric[[var]], main = var)
+}
+```
+
+In these boxplots, we can observe several things. First, some of them are very similar to a normal distribution, as the median is right in the center of the figure, and the rest of the figure is symmetric above and below the median. On the other hand, many of these variables do not have univariate outliers, as there are no points appearing above or below the interquartile range. This could be positive since they won’t interfere with the models we train. However, there are also other boxplot that show univariate outliers.
+
+Therefore, we will explore how many outliers are present in each variable.
+
+```{r}
+sapply(not_observed_numeric, function(x) length(boxplot.stats(x)$out))
+```
+
+We observe that there are indeed variables without outliers. On the other hand, when outliers are present, they are quite few compared to the total number of observations (1470). Only one of the variables has more than 10% outliers (TrainingTimesLastYear).
+
+Another aspect to observe is that in all the variables involving the temporal dimension (those that have 'Year' in their name), there are outliers, what raise suspicions that these outliers might be related to each other. We will display a correlation matrix of the quantitative variables to understand the relationships between all variables, including the relationships between the temporal variables.
+
+```{r}
+# Import ggcorrplot
+library(ggcorrplot)
+# We create and visualize a correlation matrix with the numeric variables that we know that are quantitative
+cor_numerics <- cor(not_observed_numeric)
+ggcorrplot(cor_numerics)
+```
+
+There are several insights in this correlation matrix. First, all the variables that represent a temporal dimension are highly related to each other, which strengthens the previous idea that their outliers could be related. Additionally, there are other variables that correlate with the temporal ones, specifically age and monthly salary. The rest of the variables, as we can see, do not show any type of relationship. It is curious to note that the variable 'TrainingTimesLastYear' is not correlated with any variable, and in this case, it was the variable with the highest number of outliers.
+
+We will now perform a multivariate analysis of the outliers in the variables that we have observed to be related. If there exist multivariate outliers, we will also verify if these outliers are at the same time univariate outliers. This will help us to better understand the composition of those.
+
+```{r, warning=FALSE}
+# We save in a vector these variables
+names_high_cor <- c("YearsWithCurrManager", "YearsSinceLastPromotion", "YearsInCurrentRole", "YearsAtCompany", "TotalWorkingYears", "Age")
+# We select these variables
+vars_high_cor <- HR_data[names_high_cor]
+```
+
+For studying multivariate outliers, we will use the mahalanobis_distance function from the rstatix package to calculate the Mahalanobis distance from each point to the center of the data, and mark all values that represent outliers according to this distance.
+```{r}
+library("rstatix")
+vars_high_cor <- mahalanobis_distance(vars_high_cor)
+
+# We eliminate the column that indicates the mahalanobis distance of each point to the center
+vars_high_cor$mahal.dist <- NULL
+# Now we will create a function that will replace each variable with a column where TRUE will indicate if for that variable the observation is a univariate outlier, and FALSE will indicate that is not
+determine_univariate_outliers <- function(column) {
+
+# We get the values of the first and the third quartile
+Q1 <- quantile(column, 0.25, na.rm = TRUE)
+Q3 <- quantile(column, 0.75, na.rm = TRUE)
+# Using this values we calculate the interquartile range
+IQR <- Q3 - Q1
+# We create the limits of what is considered an outliers or not (Using the general aproximation of +- 1.5IQR)
+bottom_limit <- Q1 - 1.5 * IQR
+top_limit <- Q3 + 1.5 * IQR
+
+# We determine which observation is an outlier, and generate a TRUE value when is it, and a FALSE value when is not
+column <- column < bottom_limit | column > top_limit
+return(column)}
+
+# We will use this function for each column of the previous saved variables
+for(name in names_high_cor) {
+  vars_high_cor[[name]] <- determine_univariate_outliers(vars_high_cor[[name]])
+}
+
+# We visualize the aspect of this dataframe
+head(vars_high_cor)
+```
+
+After this process, we have obtained a dataframe where each observation is marked with a boolean value in each column. In the columns named as the variables, the boolean values indicates whether the observation is an outlier or not, and in the last column, the boolean indicates whether the observation is an outlier considering the entire dataset as a whole.
+
+```{r}
+# We show how many outliers there are in each column
+colSums(vars_high_cor)
+```
+
+We can see that in some cases the number of univariate outliers is higher than the number of multivariate, and in others is smaller. Now we will verify what happens if we only observe the cases where the observations are mulitivariate outliers.
+
+```{r}
+colSums(vars_high_cor[vars_high_cor["is.outlier"]==TRUE,])
+```
+
+We can see that in some variables, most of the multivariate outliers are at the same time univariate. However, in other cases, this is not happening (for example with the variable "YearsInCurrentRole", only 5 observations are univariate outliers). So we can conclude that some of the outliers of these variables are related, but not most of them (because there are a lot more univariate outliers in some cases that multivariate).
+
+**- Missing data**
+
+Now we will verify how many missing values are in the dataset.
+
+
+```{r}
+sum(is.na(HR_data))
+sum(HR_data==" ")
+```
+
+We can see that there are not missing values in this dataset. This is something positive, because we will not generate biases using imputation methods.
+
+## Data Cleaning
+
+**COLUMNS WITH ONLY 1 UNIQUE VALUE**
+
+In the previously conducted EDA, we observed that multiple columns had the same and unique value. We will eliminate these columns.
+
+```{r}
+# We save in a vector the name of these variables
+constants_names <- c("EmployeeCount", "StandardHours")
+# We search the indexes of the columns with these names
+indexes_to_eliminate <- match(constants_names, names(HR_data))
+# We exclude the columns with these indexes from the complete dataset
+HR_data <- HR_data[-indexes_to_eliminate]
+
+# We will also discart the identifier of the employees, because is not necesary for the analysis
+HR_data <- HR_data[-(match("EmployeeNumber", names(HR_data)))]
+```
+
+**CHANGING DATA TYPES**
+
+We are going to change the values of the binary variables from Yes/No to 1 or 0 (which will convert the variables to numeric).
+
+```{r}
+HR_data$Attrition <- ifelse(HR_data$Attrition=="No", 0, 1)
+HR_data$OverTime <- ifelse(HR_data$OverTime=="No", 0, 1)
+```
+
+Now, we are going to convert the remaining character variables to factor type.
+
+```{r}
+# The levels of the variable "BusinessTravel" can be sorted, we will make this conversion considering their levels
+HR_data$BusinessTravel <- factor(HR_data$BusinessTravel, levels = c("Non-Travel", "Travel_Rarely", "Travel_Frequently"))
+
+# Now we will convert the rest of the character variables
+# We create a vector with their names
+factor_var <- c("Department", "Gender", "MaritalStatus", "EducationField", "JobRole")
+
+# And we make the conversion
+HR_data[factor_var] <- lapply(HR_data[factor_var], as.factor)
+```
+
+**CODIFICATION OF NEW VARIABLES**
+
+Some of the variables we've identified as ordinal are those whose names end in "Satisfaction". For these variables, we mentioned that we don't have information about their actual range, as the dataset download link didn't provide the theoretical range for these scales. This, as we've argued, could imply that these variables might theoretically have values higher than those that are present in this sample. Therefore, if we use the values as they appear in this dataset, we won't be able to interpret them correctly (since we won't know the real meaning of each value, we can only order them without knowing if the values actually represent a high or low magnitude).
+
+However, there is something we can do with these variables to give them a bit more interpretability. We can distinguish between the people with the highest satisfaction in the entire sample and those with the lowest satisfaction. To identify which individuals are the most and least satisfied, we will set conditions for the variables that measure satisfaction. We will create two binary variables whose values will be determined in both cases by a condition:
+
+**Variable 1:** 'Max_satisfaction' will take the value "1" when at least two of the satisfaction variables (there are only three in total) have the highest value in the sample for that variable, and 0 when they do not.
+
+**Variable 2:** 'Min_satisfaction' will take the 1 when at least two of the satisfaction variables have the lowest value in the sample for that variable, and 0 when they do not.
+
+Next, we will create these variables:
+
+```{r}
+# High satisfaction
+HR_data$High_satisfaction <- ifelse(
+  (HR_data$JobSatisfaction == max(HR_data$JobSatisfaction)) +
+  (HR_data$EnvironmentSatisfaction == max(HR_data$EnvironmentSatisfaction)) +
+  (HR_data$RelationshipSatisfaction == max(HR_data$RelationshipSatisfaction)) >= 2,
+                                    1, 0)
+# Low satisfaction
+HR_data$Low_satisfaction <- ifelse(
+  (HR_data$JobSatisfaction == min(HR_data$JobSatisfaction)) +
+  (HR_data$EnvironmentSatisfaction == min(HR_data$EnvironmentSatisfaction)) +
+  (HR_data$RelationshipSatisfaction == min(HR_data$RelationshipSatisfaction)) >= 2,
+                                   1, 0)
+```
+
+**OUTLIERS HANDLING**
+
+For handling them, we will make some tests, in order to find a good solution. We will make some transformations, and verify their effects.
+
+```{r}
+# We create a vector with the names of the variables that we identified in the previous section that have outliers.
+vars_outliers <- c("MonthlyIncome", "NumCompaniesWorked", "TotalWorkingYears", "TrainingTimesLastYear",  "YearsAtCompany", "YearsInCurrentRole", "YearsSinceLastPromotion","YearsWithCurrManager")
+
+# We create a version of these variables trasnformed using square root
+for (name in vars_outliers) {
+
+# We will create a new name to which we add at the end of the iterated name, "_scaled". We use this name because we are going to standardize it later (the idea is to first transform with the square root to reduce the effect of outliers, and then standardize).
+  name_scaled <- paste0(name, "_scaled")
+# We create a new variable, that contains the square root of the iterated variable and has the new created name
+  HR_data[[name_scaled]] <- sqrt(HR_data[[name]])
+}
+# After transforming the variable, we will verify how many outliers are in the variable
+for (name in vars_outliers) {
+  name_scaled <- paste0(name, "_scaled")
+  print(name_scaled)
+  print(length(boxplot.stats((HR_data[[name_scaled]]))$out))
+}
+```
+
+We can see that now only 3 variables still have outliers. Moreover, in 2 of these, the number of outliers is lower than it was before, indicating that the transformation reduces the number of outliers or eliminates them completely. The last step is to check how far the remaining outliers are from the center of the data in terms of standard deviations, compared to the original variables.
+
+```{r}
+# We create a vector in which we store the names of the variables transformed using the square root where still remain outliers.
+still_outliers <- c("TotalWorkingYears", "TrainingTimesLastYear", "YearsAtCompany")
+
+
+# We create a function that calculates the distance in standard deviations from the highest outlier and the mean
+distancia_outliers <- function(column) {
+  # We will create the name of the transformed variables adding "_scaled" at the end
+  scaled_name <- paste0(column, "_scaled")
+  
+  # We get the mean and the standart deviation of the original variablo and the transformed
+  sd_normal <- sd(HR_data[[column]])
+  mean_normal <- mean(HR_data[[column]])
+  sd_scaled <- sd(HR_data[[scaled_name]])
+  mean_scaled <- mean(HR_data[[scaled_name]])
+
+  # We get the outliers from the original variable and the transformed one
+  outliers_normal <- boxplot.stats(HR_data[[column]])$out
+  outliers_scaled <- boxplot.stats(HR_data[[scaled_name]])$out
+
+  # We calculate the distance in standard deviations for the outlier with the highest value in the original variable
+  print(column)
+    print(max((outliers_normal - mean_normal) / sd_normal))
+    
+# We repeat the process with the transformed variable 
+  print(scaled_name)
+    print(max((outliers_scaled - mean_scaled) / sd_scaled))
+}
+
+# We use this function with all the variables where remain outliers after transforming them
+for (column in still_outliers) {
+  distancia_outliers(column)
+}
+
+```
+
+We see that in all cases, in terms of standard deviations, the maximum distance of the highest outlier from the mean has decreased. Therefore, the transformation in these cases also has the desired effect, reducing the extremity of the outliers. Consequently, we will maintain this transformation in all the variables where it has been applied, as it will help ensure that the influence of extreme values on the predictions of the model we are going to create is not as high.
+
+**STANDARIZATION OF VARIABLES**
+
+Now we will standardize the quantitative variables of this dataset using the "min-max scaller" technique.
+
+```{r}
+# For this task we will use a function
+minmax_scaling <- function(column) { # The function has as input a column
+  # We get the maximum and the minimum of the column
+  min_val <- min(column)
+  max_val <- max(column)
+  # We apply the min-max scaller formula to the column
+  scaled_column <- (column - min_val) / (max_val - min_val)
+  return(scaled_column)} # We return the column standarized
+
+# We create a vector with the names of the remaining variables that we also want to standardize.
+rest_scalling_vars <- c("Age", "DailyRate", "DistanceFromHome", "HourlyRate",  "MonthlyRate", "PercentSalaryHike")
+
+# We standardize the variables to which we have applied the square root.
+for (name in paste0(vars_outliers, "_scaled")) {
+  HR_data[[name]] <- minmax_scaling(HR_data[[name]])
+}
+
+# We create new standardized variables with the remaining quantitative variables (the ones we did not transformed using the square root).
+for (name in rest_scalling_vars) {
+  name_scaled <- paste0(name, "_scaled")
+  HR_data[[name_scaled]] <- minmax_scaling(HR_data[[name]])
+}
+```
+
+**DISCRETIZING VARIABLES**
+
+We will also create a discretized version of each of these variables that we have standardized. This way, the final dataset will contain multiple versions of the variables, providing more options when testing which variable selection and formats work best for building a model that functions correctly for our purposes. By having variables in multiple formats, we can test different models and introduce various format combinations during training. This will allow us to see which variables and formats work best for the model we ultimately choose. We will use 'k-means' to create the intervals, as this method automatically adjusts the intervals for each partition, ensuring that the number of observations within each interval is similar.
+
+```{r}
+# We will use the package "arules"
+library(arules)
+
+# We will create a vector with the names of all the standardized variables. First, we will store in it the names of the variables with outliers, and then the names of those without outliers (we have these names in another vector). We will add "_scaled" at the end of the name of the variables to do the discretization with the standarized variables.
+
+scaled_vars <- paste0(vars_outliers, "_scaled")
+scaled_vars <- c(scaled_vars, paste0(rest_scalling_vars, "_scaled"))
+# We check all the values in this vector for ensuring that everything is correct
+scaled_vars
+```
+
+```{r}
+# We iterate over these names
+for (name in scaled_vars) {
+  # We create a new name for the discretized variable by replacing "_scaled" with "_discret"
+  disc_name <- gsub("_scaled", "_discret", name)
+  # We create a new variable with the discretized data using k-means, with 4 intervals
+  HR_data[[disc_name]] <- discretize(HR_data[[name]], method="cluster", breaks = 4)
+}
+# We check the first values of these variables
+head(HR_data[35:62])
+```
+
+We can see that the values are numbers with many decimal places. However, in several variables, some of these values repeat because they represent the boundaries of the intervals used for discretization.
+
+# Singular values decomposition
+
+After finishing with the EDA and cleaning and manipulating the data, we will explore the dimentionality of the data. In this case we will use the tecnique "Singular values decomposition".
+
+```{r}
+# We will perform the decomposition using the standardized versions of the variables. First, we create a dataframe for this purpose
+X <- HR_data[scaled_vars]
+
+# We convert this dataframe to a matrix
+X <- as.matrix(X)
+
+# We perform a singular value decomposition of this matrix using the "svd" function
+x_svd <- svd(X)
+
+```
+
+The object obtained by applying 'svd' internally contains 3 elements. Specifically, these elements correspond to the results of performing singular value decomposition. They are as follows: "u", "d", and "v", which hold the information found in the matrices U, S, and V of the singular value decomposition formula:
+
+A=UxSxV^t
+
+where A is the original data matrix, "U" and "V" are the matrices of right and left singular vectors, and S is the singular matrix, where its diagonal contains the singular values. By multiplying these last 3 matrices as shown in the formula, we would obtain the original data.
+
+In "d" we have the elements that would be on the diagonal of the matrix S, that is, the singular values. These values indicate the relative importance of each column in the matrices U and V, and thus in the data. We will graphically display their values."
+
+```{r}
+plot(x_svd$d)
+```
+
+We see that the first singular value is the most important, with a significant difference compared to the others. The remaining singular values progressively decrease in magnitude.
+
+By squaring these values and expressing them as a proportion of the total, we can determine the percentage of variance in the original data explained by each singular value multiplied by its corresponding right and left singular vectors.
+
+```{r}
+prop.table(x_svd$d^2)
+```
+
+We see that using only the first column of "u", "v", and the first value of "d", we can explain almost 80% of the variance in the data. Therefore, with a significantly smaller amount of information, we can represent most of the variance in the original data.
+
+The resources consulted for this section are as follows:
+
+- First: https://rpubs.com/reyzaguirre/460513
+
+
+- Second: https://rpubs.com/skydome20/92492
+
+
+- Third: documentation of the function "svd"
+
+- Forth: https://www.displayr.com/singular-value-decomposition-in-r/#:~:text=This%20post%20is%20going%20to,tutorial%20and%20discuss%20SVD%20properties
+
+# TESTING MULTIPLE TYPES OF MODELS
+
+## Using a non supervised method
+
+We will use an unsupervised method of **Hierarchical Clustering**, specifically an agglomerative hierarchical clustering method. For this, the following guide (is a guide in Spanish) has been consulted:
+
+https://rpubs.com/mjimcua/clustering-jerarquico-en-r
+
+Previously, we prepared the dataset so that the quantitative variables have both a discrete version and a normalized version using min-max scaling. However, after testing the model, the results obtained when creating it with the variables transformed in this way are very poor. Therefore, two models will be built in parallel, one using normalization with the min-max scaling method and another using standardization, which will result in variables with a mean of 0 and a standard deviation of 1. This will allow us to see the difference in the algorithm's results depending on the measurement scale used.
+
+We will not use the qualitative variables, as we do not know the distance between each of their categories. Since we are using fewer variables than those in the dataset (because not all of them are quantitative), we will take an exploratory approach to see if, with these variables, the observations group into well-defined clusters or on the contrary, a more thorough approach is needed in terms of variable selection based to find clearer groupings.
+
+We start preparing the datasets:
+
+```{r}
+# We create a dataset which only contains the normalized variables. We will select them by their indexes (I verifyed them manually)
+dat_norm <- data.frame(HR_data[35:48])
+# We show the first columns
+head(dat_norm)
+
+# We also select the variables in their original verison. We will select the indexes for ensuring the same order as in the original dataset (I verifyed them manually)
+dat_est <- HR_data[c(17, 19, 26, 27, 29, 30, 31, 32, 1, 4, 6, 11, 18, 22)]
+# We standarize these variables
+dat_est <- data.frame(scale(dat_est))
+# We show the first columns
+head(dat_est)
+```
