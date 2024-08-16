@@ -1,24 +1,29 @@
 ---
-title: "Attrition-Analysis"
-author: "Stefan"
+title: "Work Attrition Analysis - A Data Science Project"
+author: "Stefan Anca"
 date: "2024-08-13"
-output: html_document
+output:
+  html_document:
+    toc: true
+    theme: united
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# 1 - INTRODUCTION
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## 1.1 - R Markdown
 
-In this project I will keep available this Markdown file, and also the result from exporting it to HTML. The markdown file will have a plain text format, but the HTML file will have a nice formatted aspect.
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>. In this project I will keep available this Markdown file, and also the result from exporting it to HTML. The markdown file will have a plain text format, but the HTML file will have a nice formatted aspect.
+
+## 1.2 - Goal of the project
 
 The objective of this project will be to describe and explain how job abandonment occurs. Specifically, associations between different variables and job abandonment will be sought in order to describe when this occurs and to establish possible explanations for the phenomenon. Multiple techniques will be used for variable manipulation, data cleaning, data exploration, and clustering models to try to identify specific groups. The main goal is to explore the functioning of the algorithms and demonstrate ways of working with data, rather than creating the best model. For this secondary objective, multiple iterations of different actions performed in this script may be necessary for finding the best model.
 
 
-## Dataset description
+## 1.3 - Dataset description
 
 The selected dataset comes from the field of human resource management. The name of the dataset is "Employee Attrition and Factors". Each row corresponds to a specific employee of the company and includes some demographic variables such as age and education level (among others) containing additionally multiple variables describing the job position, such as the frequency of work-related travel, the department in which the employee works, and the distance between the workplace and the employee's home. Therefore, this dataset provides data that allows for the analysis of job abandonment from both a professional and personal perspective, making it ideal for the initial objective of describing and explaining job abandonment.
 
@@ -97,15 +102,19 @@ The name and meaning/description of the variables are presented below:
     
 **YearsWithCurrManager**: The number of years the employee has been with their current manager. (Numerical)
 
-## Exploratory Data Analysis (EDA)
+# 2. EXPLORATORY DATA ANALYSIS (EDA)
+
+## 2.1 - Number of variables of each type
 
 ```{r}
 # Load the data
 HR_data <- read.csv("WokingAttrition.csv")
 
 # Show how many variables of each class there are
-table(sapply(HR_data, class))
+barplot(table(sapply(HR_data, class)), col = "aquamarine")
 ```
+
+## 2.2 - Analysing character variables
 
 Since we have multiple variables in the dataset, we will try to make the exploratory analysis more manageable. First, we will focus on the character variables, and after on the numeric variables.
 
@@ -123,7 +132,9 @@ colnames(character_var)
 sapply(character_var, function(x) length(unique(x)))
 ```
 
-Only with the number of unique values we can observe some interesting things. First, "Over18" has only 1 unique value. In addition, there are multiple variables with only 2 or 3 unique values, and just 2 variable have more than 3 unique values. We will explore this variables starting from those that have less unique values to those that have more.
+### 2.1.1 - Character variables with 1 cathegory
+
+Only observing the number of unique values we can observe some interesting things. First, "Over18" has only 1 unique value. In addition, there are multiple variables with only 2 or 3 unique values, and just 2 variable have more than 3 unique values. We will explore this variables starting from those that have less unique values to those that have more.
 
 ```{r}
 # First we will show the unique value of the variable "Over18"
@@ -132,9 +143,11 @@ unique(HR_data$Over18)
 
 We can see that the unique value is "Y". This indicates that all individuals are adults. In the data cleaning process, we will discard this variable, as is a constant that we already know from this point about the dataset.
 
+### 2.1.2 - Character variables with 2 or 3 cathegories
+
 Now, we will make a graphical representation of the variables with 2 and 3 unique values.
 
-```{r}
+```{r, warning=FALSE}
 # We load some packages necesary for the visualisation and data manipulation
 library(ggplot2)
 library(dplyr)
@@ -153,7 +166,7 @@ data_long <- data_2_3_unique %>%
 data_long
 ```
 
-**Graphical representation**
+**GRAPHICAL REPRESENTATION OF VARIABLES WITH 2 AND 3 CATHEGORIES**
 
 Now we are going to represent this data graphicaly. On the x-axis, will be included each variable, and on the y-axis, the height represents the proportion of each category. For each variable, we will fill the figure based on the proportion that each category appears within the variable. We will create a bar chart using the values displayed in the dataframe.
 
@@ -173,6 +186,8 @@ ggplot(data_long, aes(x = Variable, y = Prop, fill = Category)) +
 
 In this chart we can observe several things. First, for binary variables, in all cases, one of the variables is somewhat or significantly more dominant than the others (the proportion is not close to 50/50 in any case). On the other hand, regarding the variables with 3 categories, several aspects can also be considered. First, in the 'Department' variable, there are only 3 unique values. This indicates that the sample is not representative of all types of jobs that might exist, but rather that it likely comes from a specific sector (since most of the workers in the sample are in the Research and Development department). Additionally, the 'Human Resources' category is underrepresented (only 4.3% of the cases). Regarding 'BusinessTravel,' we see a clear predominance of people who rarely travel over those who travel frequently or do not travel at all. Finally, concerning the 'MaritalStatus' variable, there is some balance between the proportions of the 3 categories, with only a slight predominance of the 'Married' category.
 
+### 2.1.3 - Other character variables
+
 After analyzing the character variables with little unique values, we will analyse the others character variables.
 
 ```{r}
@@ -185,6 +200,8 @@ data.frame(table(rest_character_var[2]))
 ```
 
 We see that for both variables, the categories are limited to a really speciffic field. It seems as though this data is related to the healthcare sector, and includes some complementary departments like Marketing or Human Resources. The number of employees in each category varies significantly across all categories.
+
+## 2.2 - Cathegoric variables stored as numeric
 
 Once the analysis with the variables stored as "character" in the dataset is complete, we will start analyzing the numeric variables. First we will analyze some variables that were marked as categorical in the previously created variable dictionary, but which we did not find among the character class variables, specifically:
 
@@ -200,7 +217,7 @@ df_aux <- HR_data[names]
 str(df_aux)
 ```
 
-We see that in all these cases, these are variables whose values are encoded as numbers, but on the download page, they are recorded as categorical. Therefore, the numbers probably represent categories whose values we cannot necessarily treat as continuous. Given the names and descriptions of the variables, we should probably interpret these values as ordinal. In other words, with these variables, we can determine in which observation there are higher levels of a certain variable, but we cannot make arithmetic comparisons between the different levels (for example, we cannot say that it presents double the amount of a specific variable).
+We see that in all these cases, these are variables whose values are encoded as numbers (integers), but on the download page, they are recorded as categorical. Therefore, the numbers probably represent categories whose values we cannot necessarily treat as continuous. Given the names, descriptions and data type (integer) of the variables, we should probably interpret these values as ordinal. In other words, with these variables, we can determine in which observation there are higher levels of a certain variable, but we cannot make arithmetic comparisons between the different levels (for example, we cannot say that 2 represents double of 1 in a speccific variable, we only knwo that 2 is higher than 1).
 
 We will create an histogram in order to understand how this variables are
 
@@ -213,7 +230,11 @@ for (var in colnames(df_aux)) {
 }
 ```
 
-If we look at the histogram, we don't find anything unusual. For all the values of the variables, there are bars with a minimum number of observations so that they are identifiable. The only issue we could point out is that since there are no labels showing the meaning of each value, we cannot distinguish whether the maximum and minimum values are the theoretical of the variable, or just the maximums/minimums within this sample. In other words, it could be the case that these variables could have been scored above or below the maximums/minimums shown, but this values weren't in this sample. Since the download page doesn't provide clarifications about the range these variables can take, we can't be certain about this. To address this issue, when we will prepare the data, we will create some variables from these to allow us to establish clear differences between the subjects if we use these variables.
+If we look at the histogram, we find very limited ranges for these variables (which is typical in ordinal variables). For all the values of the variables, there are bars with a minimum number of observations so that they are identifiable. The only issue we could point out is that since there are no labels showing the meaning of each value, we cannot distinguish whether the maximum and minimum values are the theoretical of the variable, or just the maximums/minimums within this sample. It could be the case that these variables could have been scored above or below the maximums/minimums shown, but this values weren't in this sample. Since the download page doesn't provide clarifications about the range these variables can take, we can't be certain about this. To address this issue, when we will prepare the data, we will create some variables from these to allow us to establish clear differences between the subjects if we use these variables.
+
+## 2.3 - Other numeric variables
+
+### 2.3.1 - General exploration
 
 Now we will analyse the rest of the numeric variables.
 
@@ -242,6 +263,8 @@ The variables shown in this summary that appear to be ordinal are: RelationshipS
 
 In all these cases, the maximum and minimum values are between 0 and 4. Additionally, all summary statistics, except for the mean, are integers, and if we consider their names and definitions, in none of the cases can the values be interpreted as a specific quantity of a magnitude (the names do not refer to specific physical objects that can be measured directly). This leads us to suspect that their values are indeed ordinal.
 
+### 2.3.2 - Variables that seem cathegoric, but are stored and described as numeric
+
 Next, we will display histograms of all these variables to see their distributions.
 
 ```{r}
@@ -258,6 +281,8 @@ sapply(numeric_var[ordinal_names], function(x) length(unique(x)))
 ```
 
 We can see that their values are discrete since each one has the same number of unique values as bars in the histogram. They seem to be values from a questionnaire or some index with a score that is always an integer. Therefore, we encounter the same issue as before: we don't know if the minimum and maximum observed in this sample are the true minimum and maximum values that these variables can take, or if they could actually have higher or lower values. Additionally, we do not know the exact meaning of each level of the categories of these variables. Therefore, when using these variables in analyses, we must be cautious about the specific interpretations made about the meaning of their magnitudes.
+
+### 2.3.3 - Univariate outliers of numeric continuous variables
 
 The rest of the quantitative variables do not seem to have any peculiarities that would lead us to think they should be excluded or that they are actually categorical. Let's analyze them graphically.
 
@@ -294,7 +319,9 @@ We observe that there are indeed variables without outliers. On the other hand, 
 
 Another aspect to observe is that in all the variables involving the temporal dimension (those that have 'Year' in their name), there are outliers, what raise suspicions that these outliers might be related to each other. We will display a correlation matrix of the quantitative variables to understand the relationships between all variables, including the relationships between the temporal variables.
 
-```{r}
+### 2.3.4 - Correlations between numeric continuous variables
+
+```{r, warning=FALSE}
 # Import ggcorrplot
 library(ggcorrplot)
 # We create and visualize a correlation matrix with the numeric variables that we know that are quantitative
@@ -303,6 +330,8 @@ ggcorrplot(cor_numerics)
 ```
 
 There are several insights in this correlation matrix. First, all the variables that represent a temporal dimension are highly related to each other, which strengthens the previous idea that their outliers could be related. Additionally, there are other variables that correlate with the temporal ones, specifically age and monthly salary. The rest of the variables, as we can see, do not show any type of relationship. It is curious to note that the variable 'TrainingTimesLastYear' is not correlated with any variable, and in this case, it was the variable with the highest number of outliers.
+
+### 2.3.5 - Multivariate outliers and their relation with univariates
 
 We will now perform a multivariate analysis of the outliers in the variables that we have observed to be related. If there exist multivariate outliers, we will also verify if these outliers are at the same time univariate outliers. This will help us to better understand the composition of those.
 
@@ -314,7 +343,7 @@ vars_high_cor <- HR_data[names_high_cor]
 ```
 
 For studying multivariate outliers, we will use the mahalanobis_distance function from the rstatix package to calculate the Mahalanobis distance from each point to the center of the data, and mark all values that represent outliers according to this distance.
-```{r}
+```{r, warning=FALSE}
 library("rstatix")
 vars_high_cor <- mahalanobis_distance(vars_high_cor)
 
@@ -360,7 +389,7 @@ colSums(vars_high_cor[vars_high_cor["is.outlier"]==TRUE,])
 
 We can see that in some variables, most of the multivariate outliers are at the same time univariate. However, in other cases, this is not happening (for example with the variable "YearsInCurrentRole", only 5 observations are univariate outliers). So we can conclude that some of the outliers of these variables are related, but not most of them (because there are a lot more univariate outliers in some cases that multivariate).
 
-**- Missing data**
+## 2.4 - Missing data
 
 Now we will verify how many missing values are in the dataset.
 
@@ -372,9 +401,9 @@ sum(HR_data==" ")
 
 We can see that there are not missing values in this dataset. This is something positive, because we will not generate biases using imputation methods.
 
-## Data Cleaning
+# 3 - DATA CLEANING
 
-**COLUMNS WITH ONLY 1 UNIQUE VALUE**
+## 3.1 - Columns with only 1 unique value
 
 In the previously conducted EDA, we observed that multiple columns had the same and unique value. We will eliminate these columns.
 
@@ -386,11 +415,11 @@ indexes_to_eliminate <- match(constants_names, names(HR_data))
 # We exclude the columns with these indexes from the complete dataset
 HR_data <- HR_data[-indexes_to_eliminate]
 
-# We will also discart the identifier of the employees, because is not necesary for the analysis
+# We will also discard the identifier of the employees, because is not necesary for the analysis
 HR_data <- HR_data[-(match("EmployeeNumber", names(HR_data)))]
 ```
 
-**CHANGING DATA TYPES**
+## 3.2 - Modifying some data types
 
 We are going to change the values of the binary variables from Yes/No to 1 or 0 (which will convert the variables to numeric).
 
@@ -413,7 +442,7 @@ factor_var <- c("Department", "Gender", "MaritalStatus", "EducationField", "JobR
 HR_data[factor_var] <- lapply(HR_data[factor_var], as.factor)
 ```
 
-**CODIFICATION OF NEW VARIABLES**
+## 3.3 - Codification of new variables
 
 Some of the variables we've identified as ordinal are those whose names end in "Satisfaction". For these variables, we mentioned that we don't have information about their actual range, as the dataset download link didn't provide the theoretical range for these scales. This, as we've argued, could imply that these variables might theoretically have values higher than those that are present in this sample. Therefore, if we use the values as they appear in this dataset, we won't be able to interpret them correctly (since we won't know the real meaning of each value, we can only order them without knowing if the values actually represent a high or low magnitude).
 
@@ -440,7 +469,7 @@ HR_data$Low_satisfaction <- ifelse(
                                    1, 0)
 ```
 
-**OUTLIERS HANDLING**
+## 3.4 - Outliers handling
 
 For handling them, we will make some tests, in order to find a good solution. We will make some transformations, and verify their effects.
 
@@ -504,7 +533,7 @@ for (column in still_outliers) {
 
 We see that in all cases, in terms of standard deviations, the maximum distance of the highest outlier from the mean has decreased. Therefore, the transformation in these cases also has the desired effect, reducing the extremity of the outliers. Consequently, we will maintain this transformation in all the variables where it has been applied, as it will help ensure that the influence of extreme values on the predictions of the model we are going to create is not as high.
 
-**STANDARIZATION OF VARIABLES**
+## 3.5 - Standardization off variables
 
 Now we will standardize the quantitative variables of this dataset using the "min-max scaller" technique.
 
@@ -533,11 +562,11 @@ for (name in rest_scalling_vars) {
 }
 ```
 
-**DISCRETIZING VARIABLES**
+## 3.6 - Discretizing variables
 
 We will also create a discretized version of each of these variables that we have standardized. This way, the final dataset will contain multiple versions of the variables, providing more options when testing which variable selection and formats work best for building a model that functions correctly for our purposes. By having variables in multiple formats, we can test different models and introduce various format combinations during training. This will allow us to see which variables and formats work best for the model we ultimately choose. We will use 'k-means' to create the intervals, as this method automatically adjusts the intervals for each partition, ensuring that the number of observations within each interval is similar.
 
-```{r}
+```{r, warning=FALSE}
 # We will use the package "arules"
 library(arules)
 
@@ -563,7 +592,7 @@ head(HR_data[35:62])
 
 We can see that the values are numbers with many decimal places. However, in several variables, some of these values repeat because they represent the boundaries of the intervals used for discretization.
 
-# Singular values decomposition
+# 4 - SINGULAR VALUES DECOMPOSITION
 
 After finishing with the EDA and cleaning and manipulating the data, we will explore the dimentionality of the data. In this case we will use the tecnique "Singular values decomposition".
 
@@ -615,7 +644,7 @@ The resources consulted for this section are as follows:
 
 # TESTING MULTIPLE TYPES OF MODELS
 
-## Using a non supervised method
+# 4 - Using a non supervised method (Hierarchical Clustering)
 
 We will use an unsupervised method of **Hierarchical Clustering**, specifically an agglomerative hierarchical clustering method. For this, the following guide (is a guide in Spanish) has been consulted:
 
@@ -666,7 +695,7 @@ plot(hc_est_euc, cex = 0.01, hang = -1, main="Standarized variables")
 
 We see how there are many branches in both cases, but their shapes change depending on the scale of the variables. We didn't set the number of clusters, as this depends on where we cut the tree. This will determine how many branches there are. Each cut branch will be a different cluster. In the next step, we will determine the number of clusters that yield the most appropriate result.
 
-### Analysis of the results of the models
+## Analysis of the results of the models
 
 We will create a function that returns a vector with the medium silhouette of the model, with diffrent number of clusters (the function will test mutiple number of clusters in each model and get the medium silhouette for each case)
 
@@ -720,7 +749,7 @@ This time we will apply DBSCAN and OPTICS only to the dataset that previously ga
 
 We will select the 'minPts' values considering the total size of our sample of 1470 observations. We will use a 'minPts' value of 100 to investigate the algorithm's behavior with a small fraction (approximately 7%) of the sample, which represents a lower neighborhood density threshold. In contrast, we will also choose a 'minPts' value of 400, close to 29% of the sample, to examine how the algorithm responds to a significantly higher neighborhood density. The choice of these two extremes aims to provide a clear understanding of how variation in neighborhood density affects the clustering results.
 
-```{r}
+```{r, warning=FALSE}
 library(dbscan)
 # We train OPTICS algorithm using the default value of eps and the 2 mentioned values of minPts
 optics_100 <- optics(dat_est, minPts = 100)
