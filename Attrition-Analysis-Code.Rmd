@@ -646,9 +646,7 @@ The resources consulted for this section are as follows:
 
 From this point of the project, multiple models (supervised models, unsupervised models, statistical models...)
 
-
-
-# 5 - Using a non supervised method (Hierarchical Clustering)
+# 5 - USING A NON SUPERVISED METHOD (HIERARCHICAL CLUSTERING)
 
 We will use an unsupervised method of **Hierarchical Clustering**, specifically an agglomerative hierarchical clustering method. For this, the following guide (is a guide in Spanish) has been consulted:
 
@@ -673,6 +671,8 @@ dat_est <- data.frame(scale(dat_est))
 # We show the first columns
 head(dat_est)
 ```
+
+## 5.1 - Model creation
 
 Now we begin to create the model. Since we are going to create 2 models in parallel, each of the commands used will be repeated twice to store the result with each measurement scale used.
 
@@ -699,7 +699,7 @@ plot(hc_est_euc, cex = 0.01, hang = -1, main="Standarized variables")
 
 We see how there are many branches in both cases, but their shapes change depending on the scale of the variables. We didn't set the number of clusters, as this depends on where we cut the tree. This will determine how many branches there are. Each cut branch will be a different cluster. In the next step, we will determine the number of clusters that yield the most appropriate result.
 
-## Analysis of the results of the models
+## 5.2 - Analysis of the results of the model
 
 We will create a function that returns a vector with the medium silhouette of the model, with diffrent number of clusters (the function will test mutiple number of clusters in each model and get the medium silhouette for each case)
 
@@ -741,13 +741,15 @@ plot(as.dendrogram(hc_norm_euc))
 rect.hclust(hc_norm_euc, k = 2, border = 3:4)
 ```
 
-### Conclusions
+## 5.3 - Conclusions
 
 Depending on the scale of the variables, the effectiveness of the model changes. Although with both scales the number of clusters with the highest average silhouette is 2, when we standardize the data, the average silhouette is higher than when we normalize it. For this reason, the best model is the 2-cluster model obtained with standardized data. However, we should keep in mind that the maximum average silhouette obtained using Euclidean distance is 0.3. Thus, with this distance metric, the model does not seem to be producing very solid clusters.
 
 It is also important to consider that since we are only using quantitative variables (as distance-based models cannot use categorical variables unless we know the distances between categories), we might be missing information that could be very important for differentiating groups in the data. However, this is a characteristic of the model; since it operates based on distances, there is nothing we can do to address this problem with this data.
 
-# 6 - Using DBSCAN and OPTICS.
+# 6 - USING DBSCAN AND OPTICS.
+
+## 6.1 - Creating the model
 
 This time we will apply DBSCAN and OPTICS only to the dataset that previously gave us the best results, i.e., with the standardized variables. We will follow this working logic:
 
@@ -778,6 +780,8 @@ dbscan400_3_5 <- extractDBSCAN(optics_400, eps_cl = 3.5)
 ```
 
 Now, for inspecting the results we just need to access the objects we saved and display their results.
+
+## 6.2 - Inspecting the results
 
 ```{r}
 # We show the results of boths models trained with OPTICS
@@ -842,7 +846,7 @@ The cluster in the first model has grown even more and now occupies almost all t
 
 The results reveal interesting patterns. With a relatively low minPts value (100), a cluster gradually forms as the eps_cl parameter increases, indicating more inclusive clustering as the neighborhood distance expands. On the other hand, when minPts is increased to 400, only noise is initially identified, reflecting significant rigidity in neighborhood definition due to the high density required to form a cluster. However, when eps_cl is raised to 3.5, a clustering pattern similar to that of the model with a lower minPts value emerges. This suggests that the data possess an underlying dense structure that only becomes evident under broader distance thresholds.
 
-### Getting a measure of the quality of the clustering
+## 6.3 - Getting a measure of the quality of the clustering
 
 First, we will examine the appearance of these 2 clusters representing them with 2 principal components (to have a representation in 2 dimensions). We will to this visualization with the 2 last models.
 
@@ -883,3 +887,12 @@ print(paste0("Outside the cluster: ", average_ssw_non_cluster))
 ```
 
 We see that the mean value of the sum of squared distances to the centroid differs significantly between the points inside the cluster and those outside it. Therefore, it is clear that the cluster identified by the model is dense (at least denser than everything outside of it). However, is not clear if with this data using a method like this is more useful than applying an outlier detection method.
+
+# 7 - DECISION TREE MODEL
+
+## 7.1 - Train test split
+
+## 7.2 - Training the model
+
+## 7.3 - Evaluating the model
+
