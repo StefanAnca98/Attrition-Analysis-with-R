@@ -424,9 +424,7 @@ variables</a></li>
 </ul></li>
 <li><a href="#singular-values-decomposition" id="toc-singular-values-decomposition">4 - SINGULAR VALUES
 DECOMPOSITION</a></li>
-<li><a href="#testing-multiple-types-of-models" id="toc-testing-multiple-types-of-models">TESTING MULTIPLE TYPES OF
-MODELS</a></li>
-<li><a href="#using-a-non-supervised-method-hierarchical-clustering" id="toc-using-a-non-supervised-method-hierarchical-clustering">4 - Using
+<li><a href="#using-a-non-supervised-method-hierarchical-clustering" id="toc-using-a-non-supervised-method-hierarchical-clustering">5 - Using
 a non supervised method (Hierarchical Clustering)</a>
 <ul>
 <li><a href="#analysis-of-the-results-of-the-models" id="toc-analysis-of-the-results-of-the-models">Analysis of the results
@@ -434,11 +432,11 @@ of the models</a>
 <ul>
 <li><a href="#conclusions" id="toc-conclusions">Conclusions</a></li>
 </ul></li>
-<li><a href="#using-dbscan-and-optics." id="toc-using-dbscan-and-optics.">Using DBSCAN and OPTICS.</a>
+</ul></li>
+<li><a href="#using-dbscan-and-optics." id="toc-using-dbscan-and-optics.">6 - Using DBSCAN and OPTICS.</a>
 <ul>
 <li><a href="#getting-a-measure-of-the-quality-of-the-clustering" id="toc-getting-a-measure-of-the-quality-of-the-clustering">Getting a
 measure of the quality of the clustering</a></li>
-</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -1357,12 +1355,12 @@ head(HR_data[35:62])</code></pre>
 ## 5               0.07142857             [0,0.272)                  [0.771,1]
 ## 6               0.14285714             [0,0.272)                  [0,0.182)
 ##   TotalWorkingYears_discret TrainingTimesLastYear_discret
-## 1               [0.29,0.46)                     [0,0.204)
-## 2              [0.46,0.646)                 [0.523,0.766)
-## 3               [0.29,0.46)                 [0.523,0.766)
-## 4               [0.29,0.46)                 [0.523,0.766)
-## 5               [0.29,0.46)                 [0.523,0.766)
-## 6               [0.29,0.46)                 [0.523,0.766)
+## 1              [0.29,0.463)                     [0,0.204)
+## 2             [0.463,0.656)                 [0.523,0.766)
+## 3              [0.29,0.463)                 [0.523,0.766)
+## 4              [0.29,0.463)                 [0.523,0.766)
+## 5              [0.29,0.463)                 [0.523,0.766)
+## 6              [0.29,0.463)                 [0.523,0.766)
 ##   YearsAtCompany_discret YearsInCurrentRole_discret
 ## 1          [0.354,0.556)              [0.181,0.501)
 ## 2          [0.354,0.556)              [0.501,0.748)
@@ -1370,27 +1368,27 @@ head(HR_data[35:62])</code></pre>
 ## 4          [0.354,0.556)              [0.501,0.748)
 ## 5              [0,0.354)              [0.181,0.501)
 ## 6          [0.354,0.556)              [0.501,0.748)
-##   YearsSinceLastPromotion_discret YearsWithCurrManager_discret   Age_discret
-## 1                       [0,0.153)                [0.424,0.687) [0.482,0.706)
-## 2                    [0.153,0.46)                [0.424,0.687)     [0.706,1]
-## 3                       [0,0.153)                    [0,0.424) [0.282,0.482)
-## 4                    [0.153,0.46)                    [0,0.424) [0.282,0.482)
-## 5                    [0.153,0.46)                    [0,0.424)     [0,0.282)
-## 6                    [0.153,0.46)                [0.424,0.687) [0.282,0.482)
+##   YearsSinceLastPromotion_discret YearsWithCurrManager_discret  Age_discret
+## 1                       [0,0.146)                [0.512,0.747) [0.38,0.616)
+## 2                   [0.146,0.411)                [0.512,0.747)    [0.616,1]
+## 3                       [0,0.146)                    [0,0.185) [0.38,0.616)
+## 4                   [0.411,0.658)                    [0,0.185) [0.207,0.38)
+## 5                   [0.146,0.411)                [0.185,0.512) [0.207,0.38)
+## 6                   [0.411,0.658)                [0.512,0.747) [0.207,0.38)
 ##   DailyRate_discret DistanceFromHome_discret HourlyRate_discret
-## 1     [0.483,0.739)                [0,0.157)          [0.741,1]
-## 2         [0,0.236)            [0.157,0.412)       [0.24,0.484)
-## 3         [0.739,1]                [0,0.157)          [0.741,1]
-## 4         [0.739,1]                [0,0.157)       [0.24,0.484)
-## 5     [0.236,0.483)                [0,0.157)           [0,0.24)
-## 6     [0.483,0.739)                [0,0.157)      [0.484,0.741)
+## 1     [0.476,0.735)                [0,0.161)          [0.741,1]
+## 2         [0,0.228)             [0.161,0.43)       [0.24,0.484)
+## 3         [0.735,1]                [0,0.161)          [0.741,1]
+## 4         [0.735,1]                [0,0.161)       [0.24,0.484)
+## 5     [0.228,0.476)                [0,0.161)           [0,0.24)
+## 6     [0.476,0.735)                [0,0.161)      [0.484,0.741)
 ##   MonthlyRate_discret PercentSalaryHike_discret
-## 1       [0.497,0.745)                 [0,0.229)
-## 2           [0.745,1]                 [0.689,1]
-## 3           [0,0.247)             [0.229,0.456)
-## 4           [0.745,1]                 [0,0.229)
-## 5       [0.497,0.745)                 [0,0.229)
-## 6       [0.247,0.497)                 [0,0.229)</code></pre>
+## 1       [0.497,0.745)                 [0,0.167)
+## 2           [0.745,1]                 [0.671,1]
+## 3           [0,0.247)             [0.167,0.394)
+## 4           [0.745,1]                 [0,0.167)
+## 5       [0.497,0.745)                 [0,0.167)
+## 6       [0.247,0.497)                 [0,0.167)</code></pre>
 <p>We can see that the values are numbers with many decimal places.
 However, in several variables, some of these values repeat because they
 represent the boundaries of the intervals used for discretization.</p>
@@ -1447,12 +1445,11 @@ represent most of the variance in the original data.</p>
 <li><p>Third: documentation of the function “svd”</p></li>
 <li><p>Forth: <a href="https://www.displayr.com/singular-value-decomposition-in-r/#" class="uri">https://www.displayr.com/singular-value-decomposition-in-r/#</a>:~:text=This%20post%20is%20going%20to,tutorial%20and%20discuss%20SVD%20properties</p></li>
 </ul>
-</div>
-<div id="testing-multiple-types-of-models" class="section level1">
-<h1>TESTING MULTIPLE TYPES OF MODELS</h1>
+<p>From this point of the project, multiple models (supervised models,
+unsupervised models, statistical models…)</p>
 </div>
 <div id="using-a-non-supervised-method-hierarchical-clustering" class="section level1">
-<h1>4 - Using a non supervised method (Hierarchical Clustering)</h1>
+<h1>5 - Using a non supervised method (Hierarchical Clustering)</h1>
 <p>We will use an unsupervised method of <strong>Hierarchical
 Clustering</strong>, specifically an agglomerative hierarchical
 clustering method. For this, the following guide (is a guide in Spanish)
@@ -1639,8 +1636,9 @@ since it operates based on distances, there is nothing we can do to
 address this problem with this data.</p>
 </div>
 </div>
-<div id="using-dbscan-and-optics." class="section level2">
-<h2>Using DBSCAN and OPTICS.</h2>
+</div>
+<div id="using-dbscan-and-optics." class="section level1">
+<h1>6 - Using DBSCAN and OPTICS.</h1>
 <p>This time we will apply DBSCAN and OPTICS only to the dataset that
 previously gave us the best results, i.e., with the standardized
 variables. We will follow this working logic:</p>
@@ -1805,7 +1803,6 @@ those outside it. Therefore, it is clear that the cluster identified by
 the model is dense (at least denser than everything outside of it).
 However, is not clear if with this data using a method like this is more
 useful than applying an outlier detection method.</p>
-</div>
 </div>
 </div>
 

@@ -642,9 +642,13 @@ The resources consulted for this section are as follows:
 
 - Forth: https://www.displayr.com/singular-value-decomposition-in-r/#:~:text=This%20post%20is%20going%20to,tutorial%20and%20discuss%20SVD%20properties
 
-# TESTING MULTIPLE TYPES OF MODELS
 
-# 4 - Using a non supervised method (Hierarchical Clustering)
+
+From this point of the project, multiple models (supervised models, unsupervised models, statistical models...)
+
+
+
+# 5 - Using a non supervised method (Hierarchical Clustering)
 
 We will use an unsupervised method of **Hierarchical Clustering**, specifically an agglomerative hierarchical clustering method. For this, the following guide (is a guide in Spanish) has been consulted:
 
@@ -743,7 +747,7 @@ Depending on the scale of the variables, the effectiveness of the model changes.
 
 It is also important to consider that since we are only using quantitative variables (as distance-based models cannot use categorical variables unless we know the distances between categories), we might be missing information that could be very important for differentiating groups in the data. However, this is a characteristic of the model; since it operates based on distances, there is nothing we can do to address this problem with this data.
 
-## Using DBSCAN and OPTICS.
+# 6 - Using DBSCAN and OPTICS.
 
 This time we will apply DBSCAN and OPTICS only to the dataset that previously gave us the best results, i.e., with the standardized variables. We will follow this working logic:
 
