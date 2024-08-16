@@ -157,17 +157,17 @@ data_long
 
 Now we are going to represent this data graphicaly. On the x-axis, will be included each variable, and on the y-axis, the height represents the proportion of each category. For each variable, we will fill the figure based on the proportion that each category appears within the variable. We will create a bar chart using the values displayed in the dataframe.
 
-```{r}
+```{r fig.width=12, fig.height=12}
 # Initialization of ggplot graph
 ggplot(data_long, aes(x = Variable, y = Prop, fill = Category)) +
   geom_bar(stat = "identity") +
   # Text is added to axes, title, and for each category represented
   geom_text(aes(label = paste0(Category, "\n", round(Prop * 100, 1), "%")), 
-            position = position_stack(vjust = 0.6), size=3) +
+            position = position_stack(vjust = 0.6), size=4) +
   labs(y = "Proportion", title = "Proportion of values of the variables with 2 or 3 unique values") +
   # The legend text will have an angle
   theme(legend.position = "none",
-        axis.text.x = element_text(angle = 20, hjust = 1),
+        axis.text.x = element_text(angle = 20, hjust = 1, size = 15),
   )
 ```
 
@@ -640,3 +640,213 @@ dat_est <- data.frame(scale(dat_est))
 # We show the first columns
 head(dat_est)
 ```
+
+Now we begin to create the model. Since we are going to create 2 models in parallel, each of the commands used will be repeated twice to store the result with each measurement scale used.
+
+```{r}
+par(mfrow=c(1,2))
+# We need the library "cluster"
+library(cluster)
+
+# We calculate the dissimilarities matrix
+d_norm_euc <- dist(dat_norm, method = "euclidean")
+d_est_euc <- dist(dat_est, method = "euclidean")
+
+# We create a hierarchical clustering models with each of these distances
+hc_norm_euc <- hclust(d_norm_euc, method = "complete")
+hc_est_euc <- hclust(d_est_euc, method = "complete")
+```
+
+Now we will show the resulting dendrogram from creating this model. Since these dendrograms have many labels, and there's no way for them to be legible (they overlap), I have decided to make the labels on the X-axis very small, and we will focus more on the shape of the obtained clusters.
+
+```{r}
+plot(hc_norm_euc, cex = 0.01, hang = -1, main="Normalized variables")
+plot(hc_est_euc, cex = 0.01, hang = -1, main="Standarized variables")
+```
+
+We see how there are many branches in both cases, but their shapes change depending on the scale of the variables. We didn't set the number of clusters, as this depends on where we cut the tree. This will determine how many branches there are. Each cut branch will be a different cluster. In the next step, we will determine the number of clusters that yield the most appropriate result.
+
+### Analysis of the results of the models
+
+We will create a function that returns a vector with the medium silhouette of the model, with diffrent number of clusters (the function will test mutiple number of clusters in each model and get the medium silhouette for each case)
+
+```{r}
+calculate_silhouettes <- function(model, distances) {
+  # We create a vector with 10 zeros that we will replace with the silhouette values
+  results <- rep(0, 10)
+  
+  # We iterate from 2 to 10
+  for (i in 2:10) {
+    # In each iteration we will cut the dendrogram for getting "i" clusters
+    y_cluster <- cutree(model, k = i)
+    # We calculate the medium silhouette of the clusters obtaine with this cut of the dendrogram
+    sk <- silhouette(y_cluster, distances)
+    results[i] <- mean(sk[, 3])
+  }
+
+  # Return the results
+  return(results)
+}
+
+# We call this function with both models previously created and both dissimilarities matrixes calculated
+results_1 <- calculate_silhouettes(hc_norm_euc, d_norm_euc)
+results_2 <- calculate_silhouettes(hc_est_euc, d_est_euc)
+
+# We show graphically the medium silhouette for each model and each number of clusters
+par(mfrow=c(1,2))
+plot(2:10,results_1[2:10],type="o",col="blue",pch=0,xlab="Number of clusters",ylab="Silhouette", main = "Using min-max scalling with range 0 to 1")
+plot(2:10,results_2[2:10],type="o",col="blue",pch=0,xlab="Number of clusters",ylab="Silhouette", main = "Using normalization.
+Mean = 0 ; Standard Deviation = 1")
+```
+
+We see that the highest average silhouette score is obtained with 2 clusters using both scaling methods. However, when using standardized distances based on the mean and standard deviation, the result is much better (the Y-axis values in this second case are higher).
+
+Next, we will cut the dendrogram of the best model to obtain this number of clusters (in the model created with standardized distances).
+
+```{r}
+plot(as.dendrogram(hc_norm_euc))
+rect.hclust(hc_norm_euc, k = 2, border = 3:4)
+```
+
+### Conclusions
+
+Depending on the scale of the variables, the effectiveness of the model changes. Although with both scales the number of clusters with the highest average silhouette is 2, when we standardize the data, the average silhouette is higher than when we normalize it. For this reason, the best model is the 2-cluster model obtained with standardized data. However, we should keep in mind that the maximum average silhouette obtained using Euclidean distance is 0.3. Thus, with this distance metric, the model does not seem to be producing very solid clusters.
+
+It is also important to consider that since we are only using quantitative variables (as distance-based models cannot use categorical variables unless we know the distances between categories), we might be missing information that could be very important for differentiating groups in the data. However, this is a characteristic of the model; since it operates based on distances, there is nothing we can do to address this problem with this data.
+
+## Using DBSCAN and OPTICS.
+
+This time we will apply DBSCAN and OPTICS only to the dataset that previously gave us the best results, i.e., with the standardized variables. We will follow this working logic:
+
+We will select the 'minPts' values considering the total size of our sample of 1470 observations. We will use a 'minPts' value of 100 to investigate the algorithm's behavior with a small fraction (approximately 7%) of the sample, which represents a lower neighborhood density threshold. In contrast, we will also choose a 'minPts' value of 400, close to 29% of the sample, to examine how the algorithm responds to a significantly higher neighborhood density. The choice of these two extremes aims to provide a clear understanding of how variation in neighborhood density affects the clustering results.
+
+```{r}
+library(dbscan)
+# We train OPTICS algorithm using the default value of eps and the 2 mentioned values of minPts
+optics_100 <- optics(dat_est, minPts = 100)
+optics_400 <- optics(dat_est, minPts = 400)
+```
+
+To train the DBSCAN algorithm, I iteratively adjusted the "eps_cl" values before choosing the ones that will be shown in the code below. I selected values that allow for easy visualization of the behavior of both models.
+
+```{r}
+#We extract the agrupation using: eps_cl = 2
+dbscan100_2 <- extractDBSCAN(optics_100, eps_cl = 2)
+dbscan400_2 <- extractDBSCAN(optics_400, eps_cl = 2)
+#We extract the agrupation using: eps_cl = 2.5
+dbscan100_2_5 <- extractDBSCAN(optics_100, eps_cl = 2.5)
+dbscan400_2_5 <- extractDBSCAN(optics_400, eps_cl = 2.5)
+#We extract the agrupation using: eps_cl = 3
+dbscan100_3 <- extractDBSCAN(optics_100, eps_cl = 3)
+dbscan400_3 <- extractDBSCAN(optics_400, eps_cl = 3)
+#We extract the agrupation using: eps_cl = 3.5
+dbscan100_3_5 <- extractDBSCAN(optics_100, eps_cl = 3.5)
+dbscan400_3_5 <- extractDBSCAN(optics_400, eps_cl = 3.5)
+```
+
+Now, for inspecting the results we just need to access the objects we saved and display their results.
+
+```{r}
+# We show the results of boths models trained with OPTICS
+optics_100
+optics_400
+```
+
+We observe that with a significant increase in the neighborhood criterion (minPts), the value of "eps" has increased only slightly. In the first model, it is 7.327, and in the second model, it is 8.8934 (an increase of only a small percentage between 10-20%, despite the neighborhood criterion being multiplied by 4). This means that to find 4 times more points, the search radius only needs to increase slightly.
+
+Now we show graphically the results of these 2 models:
+
+```{r}
+par(mfrow=c(1,2))
+plot(optics_100, ylim=c(0, 5))
+plot(optics_400, ylim=c(0, 5))
+```
+
+We can see how the diffrence between both results is not very big. The unique diffrence is that in the first model, the distance for each observation increases in a more progressive way than in the second model. However, the distances on both models are big.
+
+Now we will show the results that dbscan obtains with each of the tested eps_cl values. We will show in paralell the results of each model with each eps_cl value tested. On the right will be the model which used 100 minpts, and on the left the model that used 400.
+
+**eps_cl = 2**
+
+```{r}
+par(mfrow=c(1,2))
+plot(dbscan100_2, ylim=c(0,5))
+plot(dbscan400_2, ylim=c(0,5))
+```
+
+Initially, no clusters are detected in either of the models.
+
+
+**eps_cl = 2,5**
+
+```{r}
+par(mfrow=c(1,2))
+plot(dbscan100_2_5, ylim=c(0,5))
+plot(dbscan400_2_5, ylim=c(0,5))
+```
+
+A cluster appears in the first model, but in the second everything is still noise. This outcome is logicical, given that in the first optics model, the initial reachability distances are shorter than in the second optics model.
+
+**eps_cl = 3**
+
+```{r}
+par(mfrow=c(1,2))
+plot(dbscan100_3, ylim=c(0,5))
+plot(dbscan400_3, ylim=c(0,5))
+```
+
+The size of the cluster in the first model has increased, and in the second model everything is still noise.
+
+**eps_cl = 3.5**
+
+```{r}
+par(mfrow=c(1,2))
+plot(dbscan100_3_5, ylim=c(0,5))
+plot(dbscan400_3_5, ylim=c(0,5))
+```
+
+The cluster in the first model has grown even more and now occupies almost all the observations. Additionally, in the second model, a cluster of nearly the same size as the cluster in the first model has abruptly appeared.
+
+The results reveal interesting patterns. With a relatively low minPts value (100), a cluster gradually forms as the eps_cl parameter increases, indicating more inclusive clustering as the neighborhood distance expands. On the other hand, when minPts is increased to 400, only noise is initially identified, reflecting significant rigidity in neighborhood definition due to the high density required to form a cluster. However, when eps_cl is raised to 3.5, a clustering pattern similar to that of the model with a lower minPts value emerges. This suggests that the data possess an underlying dense structure that only becomes evident under broader distance thresholds.
+
+### Getting a measure of the quality of the clustering
+
+First, we will examine the appearance of these 2 clusters representing them with 2 principal components (to have a representation in 2 dimensions). We will to this visualization with the 2 last models.
+
+```{r}
+par(mfrow=c(1,2))
+hullplot(dat_est, dbscan100_3_5)
+hullplot(dat_est, dbscan400_3_5)
+```
+
+We can see that there are not multiple structure of points. Instead, there in both models there is only a single cluster of points, with some points gradually moving away from this structure. Both models capture a large portion of the points with the highest density and exclude most of the points with lower density. Therefore, it seems logical that the model does not find more than a single cluster.
+
+Since we only have one cluster, we will evaluate its quality based on the "Sum of Squares Within" index. We will do this only with the model whose optics value was 400 before applying DBSCAN. We will calculate the index and its average value for both the points inside the cluster and those outside it, and then compare them to determine if the obtained cluster is dense or not.
+
+```{r}
+# We extract the data which is part of the cluster
+cluster_data <- dat_est[dbscan400_3_5$cluster == 1, ]
+
+# Whe also extract the data which is not part of the cluster
+non_cluster_data <- dat_est[dbscan100_3_5$cluster == 0, ]
+
+# We calculate the centroid of the principal cluster (the mean value of the values of the cluster)
+centroid_cluster <- colMeans(cluster_data)
+
+# We calculate the squared summatory of the points of the cluster
+ssw_cluster <- sum(rowSums((cluster_data - centroid_cluster)^2))
+# And we get the average value of this sum
+average_ssw_cluster <- ssw_cluster / nrow(cluster_data)
+
+# And now we get the sum of squares of the points out of the cluster (from the points to the calculated centroid) 
+ssw_non_cluster <- sum(rowSums((non_cluster_data - centroid_cluster)^2))
+# We get the average value of this sum
+average_ssw_non_cluster <- ssw_non_cluster / nrow(non_cluster_data)
+
+
+# We show both average values
+print(paste0("Inside the cluster: ", average_ssw_cluster))
+print(paste0("Outside the cluster: ", average_ssw_non_cluster))
+```
+
+We see that the mean value of the sum of squared distances to the centroid differs significantly between the points inside the cluster and those outside it. Therefore, it is clear that the cluster identified by the model is dense (at least denser than everything outside of it). However, is not clear if with this data using a method like this is more useful than applying an outlier detection method.
