@@ -1369,40 +1369,40 @@ head(HR_data[35:62])</code></pre>
 ## 5               0.07142857             [0,0.272)                  [0.771,1]
 ## 6               0.14285714             [0,0.272)                  [0,0.182)
 ##   TotalWorkingYears_discret TrainingTimesLastYear_discret
-## 1               [0.29,0.46)                      [0,0.61)
-## 2              [0.46,0.646)                  [0.61,0.762)
-## 3               [0.29,0.46)                  [0.61,0.762)
-## 4               [0.29,0.46)                  [0.61,0.762)
-## 5               [0.29,0.46)                  [0.61,0.762)
-## 6               [0.29,0.46)                      [0,0.61)
+## 1             [0.391,0.574)                     [0,0.204)
+## 2             [0.391,0.574)                     [0.678,1]
+## 3             [0.391,0.574)                     [0.678,1]
+## 4             [0.391,0.574)                     [0.678,1]
+## 5                 [0,0.391)                     [0.678,1]
+## 6             [0.391,0.574)                 [0.493,0.678)
 ##   YearsAtCompany_discret YearsInCurrentRole_discret
-## 1          [0.278,0.429)              [0.384,0.564)
-## 2          [0.429,0.608)                  [0.564,1]
-## 3              [0,0.278)                   [0,0.16)
-## 4          [0.429,0.608)                  [0.564,1]
-## 5              [0,0.278)               [0.16,0.384)
-## 6          [0.278,0.429)                  [0.564,1]
+## 1          [0.349,0.559)              [0.423,0.596)
+## 2          [0.349,0.559)                  [0.596,1]
+## 3              [0,0.197)                  [0,0.171)
+## 4          [0.349,0.559)                  [0.596,1]
+## 5          [0.197,0.349)              [0.171,0.423)
+## 6          [0.349,0.559)                  [0.596,1]
 ##   YearsSinceLastPromotion_discret YearsWithCurrManager_discret   Age_discret
-## 1                       [0,0.153)                [0.424,0.687) [0.336,0.549)
-## 2                    [0.153,0.46)                [0.424,0.687) [0.549,0.763)
-## 3                       [0,0.153)                    [0,0.424) [0.336,0.549)
-## 4                    [0.153,0.46)                    [0,0.424) [0.336,0.549)
-## 5                    [0.153,0.46)                    [0,0.424)     [0,0.336)
-## 6                    [0.153,0.46)                [0.424,0.687)     [0,0.336)
+## 1                       [0,0.153)                [0.424,0.687) [0.465,0.688)
+## 2                    [0.153,0.46)                [0.424,0.687)     [0.688,1]
+## 3                       [0,0.153)                    [0,0.424) [0.276,0.465)
+## 4                    [0.153,0.46)                    [0,0.424) [0.276,0.465)
+## 5                    [0.153,0.46)                    [0,0.424)     [0,0.276)
+## 6                    [0.153,0.46)                [0.424,0.687) [0.276,0.465)
 ##   DailyRate_discret DistanceFromHome_discret HourlyRate_discret
-## 1     [0.483,0.739)                [0,0.105)          [0.741,1]
-## 2         [0,0.236)            [0.105,0.284)       [0.24,0.484)
-## 3         [0.739,1]                [0,0.105)          [0.741,1]
-## 4         [0.739,1]                [0,0.105)       [0.24,0.484)
-## 5     [0.236,0.483)                [0,0.105)           [0,0.24)
-## 6     [0.483,0.739)                [0,0.105)      [0.484,0.741)
+## 1     [0.479,0.737)                [0,0.157)          [0.789,1]
+## 2          [0,0.23)            [0.157,0.412)      [0.278,0.545)
+## 3         [0.737,1]                [0,0.157)          [0.789,1]
+## 4         [0.737,1]                [0,0.157)      [0.278,0.545)
+## 5      [0.23,0.479)                [0,0.157)          [0,0.278)
+## 6     [0.479,0.737)                [0,0.157)      [0.545,0.789)
 ##   MonthlyRate_discret PercentSalaryHike_discret
-## 1       [0.497,0.745)                 [0,0.182)
-## 2           [0.745,1]                 [0.723,1]
-## 3           [0,0.247)              [0.182,0.44)
-## 4           [0.745,1]                 [0,0.182)
-## 5       [0.497,0.745)                 [0,0.182)
-## 6       [0.247,0.497)                 [0,0.182)</code></pre>
+## 1       [0.497,0.745)                [0,0.0541)
+## 2           [0.745,1]                 [0.482,1]
+## 3           [0,0.247)               [0.2,0.482)
+## 4           [0.745,1]                [0,0.0541)
+## 5       [0.497,0.745)              [0.0541,0.2)
+## 6       [0.247,0.497)              [0.0541,0.2)</code></pre>
 <p>We can see that the values are numbers with many decimal places.
 However, in several variables, some of these values repeat because they
 represent the boundaries of the intervals used for discretization.</p>
@@ -1832,6 +1832,17 @@ useful than applying an outlier detection method.</p>
 <h1>7 - DECISION TREE MODEL</h1>
 <div id="train-test-split" class="section level2">
 <h2>7.1 - Train test split</h2>
+<p>Before starting with the selection of the training and test samples,
+we are going to choose only the variables with which we will build the
+model. We will consider 2 things for this; first, we will not select
+more than one version of the the same variable, and second, we will
+choose only the most important/relevant ones for building our model.</p>
+<p>The discrete/standardized versions of some variables we have created
+are at the end of the dataset, from variable 34 onwards. Therefore, we
+will only select the first 33 to build the model. Since a rule-based
+model requires understanding the meaning of the variables, we will
+choose the original variables, to improve the interpretability of the
+model.</p>
 </div>
 <div id="training-the-model" class="section level2">
 <h2>7.2 - Training the model</h2>

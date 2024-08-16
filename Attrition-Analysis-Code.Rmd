@@ -892,6 +892,10 @@ We see that the mean value of the sum of squared distances to the centroid diffe
 
 ## 7.1 - Train test split
 
+Before starting with the selection of the training and test samples, we are going to choose only the variables with which we will build the model. We will consider 2 things for this; first, we will not select more than one version of the the same variable, and second, we will choose only the most important/relevant ones for building our model.
+
+The discrete/standardized versions of some variables we have created are at the end of the dataset, from variable 34 onwards. Therefore, we will only select the first 33 to build the model. Since a rule-based model requires understanding the meaning of the variables, we will choose the original variables, to improve the interpretability of the model.
+
 ## 7.2 - Training the model
 
 ## 7.3 - Evaluating the model
