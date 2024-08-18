@@ -537,7 +537,7 @@ for (column in still_outliers) {
 
 We see that in all cases, in terms of standard deviations, the maximum distance of the highest outlier from the mean has decreased. Therefore, the transformation in these cases also has the desired effect, reducing the extremity of the outliers. Consequently, we will maintain this transformation in all the variables where it has been applied, as it will help ensure that the influence of extreme values on the predictions of the model we are going to create is not as high.
 
-## 3.5 - Standardization off variables
+## 3.5 - Standardization of variables
 
 Now we will standardize the quantitative variables of this dataset using the "min-max scaller" technique.
 
@@ -908,7 +908,7 @@ HR_data <- HR_data[-index]
 
 # TO DO
 
-# ELIMINATE IT IN THE SECTION WHERE ALL THE ELIMINATIONS ARE MADE, AND REFACTOR THE CODE. ALSO DELETING THIS CODE AFTER REFACTORING
+# THIS VARIABLE SHOULD BE ELMINATED IN THE SECTION WHERE ALL THE ELIMINATIONS ARE MADE, AND REFACTOR THE CODE. ALSO IS REQUIERED DELETING THIS CODE AFTER REFACTORING
 ```
 
 **Continuation with the project**
@@ -1010,6 +1010,44 @@ We see that the "1" category (the employee will leave his job) appears much less
 sumary_model
 ```
 
+We obtained a model with 17 rules, 6 applying for class 0 (the person didn't leave the organisation), and 11 rules for the class 1 (the person left the organisation). The rules for the class 0 are more generic (the conditions are not so complex) and apply to many more cases than the rules for the class 1. On the other hand, while some rules of the class 1 are also somewhat general, others are very specific, and apply to a very small number of cases. This indicates that the model is possibly overfitted for the class 1, because the rules could be generated based on very specific cases that may be present only in this dataset.
+
+Now we will display graphically the model using the same configuration.
+
+```{r fig.width=13, fig.height=6,dpi=300}
+set.seed(7)
+# We load "grid" package for manipulating some graphical parameters
+library(grid)
+# We show graphically the model
+model_plot <- C5.0(train_dat[columns_for_model], train_dat$Attrition)
+plot(model_plot, gp=gpar(fontsize=7))
+```
+
+We see how the tree is quite complex, with multiple branches, and it is quite deep. The nodes and texts within it are generally legible, but the complexity of the tree gives it an appearance that is overloaded with information.
+
+Now, for a fast evaluation of this model (that is only an initia model) we will create a confusion matrix.
+
+```{r}
+# We predict the results of the model in the training dataset
+prediction <- predict(defalut_model, test_dat[columns_for_model])
+# We calculate the accuracy of the model in the test dataset
+100*sum(prediction==test_dat$Attrition)/length(prediction)
+# We will use "crosstable" function from the package "gmodels" for creating the model
+library(gmodels)
+CrossTable(test_dat$Attrition, prediction, prop.chisq  = FALSE, prop.c = FALSE, prop.r =FALSE, dnn = c('Reality', 'Prediction'))
+```
+
+The accuracy of the model is relatively high, however, if we observe the confusion matrix, the model doesn't predict very well the class "1" (the employee left the organisation). For this class we had a lot of very specific rules, but, those rules probably were very specific to the train tataset, and do not apply to other cases.
+
+We will try to solve this problem using pruning options while training the model, this will avoid creating overly complex ramifications, and will lead to more general rules that will likely be useful in various datasets.
+
+```{r}
+prunned_model <- C5.0(train_dat[columns_for_model], train_dat$Attrition, rules=TRUE, control = C5.0Control(noGlobalPruning = FALSE, CF = 0.1))
+
+prunned_model
+```
+
+The number of rules has decreased from 17 to 8. We will now evaluate this model more thoroughly than the previous one.
 
 ## 7.3 - Evaluating the model
 
