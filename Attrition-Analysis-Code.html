@@ -1157,7 +1157,11 @@ HR_data$Low_satisfaction &lt;- ifelse(
   (HR_data$JobSatisfaction == min(HR_data$JobSatisfaction)) +
   (HR_data$EnvironmentSatisfaction == min(HR_data$EnvironmentSatisfaction)) +
   (HR_data$RelationshipSatisfaction == min(HR_data$RelationshipSatisfaction)) &gt;= 2,
-                                   1, 0)</code></pre>
+                                   1, 0)
+
+# We also transform other some numeric variables to factor, including those that we have just created (we use the same procedure as before, but with other variables. We do it separately for having more modularity in the transformation of both types of variables)
+factor_var &lt;- c(&quot;Attrition&quot;, &quot;Education&quot;, &quot;EnvironmentSatisfaction&quot;, &quot;JobInvolvement&quot;, &quot;JobSatisfaction&quot;, &quot;OverTime&quot;, &quot;PerformanceRating&quot;, &quot;RelationshipSatisfaction&quot;, &quot;StockOptionLevel&quot;, &quot;WorkLifeBalance&quot;, &quot;High_satisfaction&quot;, &quot;Low_satisfaction&quot;)
+HR_data[factor_var] &lt;- lapply(HR_data[factor_var], as.factor)</code></pre>
 </div>
 <div id="outliers-handling" class="section level2">
 <h2>3.4 - Outliers handling</h2>
@@ -1362,47 +1366,47 @@ head(HR_data[35:62])</code></pre>
 ## 5        0.3500358              0.03571429         0.1428571         0.58373821
 ## 6        0.6463851              0.03571429         0.7000000         0.39229070
 ##   PercentSalaryHike_scaled MonthlyIncome_discret NumCompaniesWorked_discret
-## 1               0.00000000         [0.272,0.484)                  [0.771,1]
-## 2               0.85714286         [0.272,0.484)              [0.182,0.502)
-## 3               0.28571429             [0,0.272)                  [0.771,1]
-## 4               0.00000000             [0,0.272)              [0.182,0.502)
-## 5               0.07142857             [0,0.272)                  [0.771,1]
+## 1               0.00000000         [0.272,0.484)                  [0.744,1]
+## 2               0.85714286         [0.272,0.484)              [0.182,0.491)
+## 3               0.28571429             [0,0.272)                  [0.744,1]
+## 4               0.00000000             [0,0.272)              [0.182,0.491)
+## 5               0.07142857             [0,0.272)                  [0.744,1]
 ## 6               0.14285714             [0,0.272)                  [0,0.182)
 ##   TotalWorkingYears_discret TrainingTimesLastYear_discret
-## 1             [0.391,0.574)                     [0,0.204)
-## 2             [0.391,0.574)                     [0.678,1]
-## 3             [0.391,0.574)                     [0.678,1]
-## 4             [0.391,0.574)                     [0.678,1]
-## 5                 [0,0.391)                     [0.678,1]
-## 6             [0.391,0.574)                 [0.493,0.678)
+## 1             [0.391,0.578)                     [0,0.312)
+## 2             [0.391,0.578)                 [0.312,0.744)
+## 3             [0.391,0.578)                 [0.312,0.744)
+## 4             [0.391,0.578)                 [0.312,0.744)
+## 5                 [0,0.391)                 [0.312,0.744)
+## 6             [0.391,0.578)                 [0.312,0.744)
 ##   YearsAtCompany_discret YearsInCurrentRole_discret
-## 1          [0.349,0.559)              [0.423,0.596)
-## 2          [0.349,0.559)                  [0.596,1]
-## 3              [0,0.197)                  [0,0.171)
-## 4          [0.349,0.559)                  [0.596,1]
-## 5          [0.197,0.349)              [0.171,0.423)
-## 6          [0.349,0.559)                  [0.596,1]
+## 1          [0.278,0.429)              [0.181,0.501)
+## 2          [0.429,0.608)              [0.501,0.748)
+## 3              [0,0.278)                  [0,0.181)
+## 4          [0.429,0.608)              [0.501,0.748)
+## 5              [0,0.278)              [0.181,0.501)
+## 6          [0.278,0.429)              [0.501,0.748)
 ##   YearsSinceLastPromotion_discret YearsWithCurrManager_discret   Age_discret
-## 1                       [0,0.153)                [0.424,0.687) [0.465,0.688)
-## 2                    [0.153,0.46)                [0.424,0.687)     [0.688,1]
-## 3                       [0,0.153)                    [0,0.424) [0.276,0.465)
-## 4                    [0.153,0.46)                    [0,0.424) [0.276,0.465)
-## 5                    [0.153,0.46)                    [0,0.424)     [0,0.276)
-## 6                    [0.153,0.46)                [0.424,0.687) [0.276,0.465)
+## 1                       [0,0.153)                [0.391,0.577) [0.471,0.688)
+## 2                    [0.153,0.46)                    [0.577,1]     [0.688,1]
+## 3                       [0,0.153)                    [0,0.162)  [0.29,0.471)
+## 4                    [0.153,0.46)                    [0,0.162)  [0.29,0.471)
+## 5                    [0.153,0.46)                [0.162,0.391)      [0,0.29)
+## 6                    [0.153,0.46)                    [0.577,1]  [0.29,0.471)
 ##   DailyRate_discret DistanceFromHome_discret HourlyRate_discret
-## 1     [0.479,0.737)                [0,0.157)          [0.789,1]
-## 2          [0,0.23)            [0.157,0.412)      [0.278,0.545)
-## 3         [0.737,1]                [0,0.157)          [0.789,1]
-## 4         [0.737,1]                [0,0.157)      [0.278,0.545)
-## 5      [0.23,0.479)                [0,0.157)          [0,0.278)
-## 6     [0.479,0.737)                [0,0.157)      [0.545,0.789)
+## 1     [0.483,0.739)                [0,0.157)          [0.789,1]
+## 2         [0,0.236)            [0.157,0.412)      [0.278,0.545)
+## 3         [0.739,1]                [0,0.157)          [0.789,1]
+## 4         [0.739,1]                [0,0.157)      [0.278,0.545)
+## 5     [0.236,0.483)                [0,0.157)          [0,0.278)
+## 6     [0.483,0.739)                [0,0.157)      [0.545,0.789)
 ##   MonthlyRate_discret PercentSalaryHike_discret
-## 1       [0.497,0.745)                [0,0.0541)
-## 2           [0.745,1]                 [0.482,1]
-## 3           [0,0.247)               [0.2,0.482)
-## 4           [0.745,1]                [0,0.0541)
-## 5       [0.497,0.745)              [0.0541,0.2)
-## 6       [0.247,0.497)              [0.0541,0.2)</code></pre>
+## 1       [0.497,0.745)                 [0,0.295)
+## 2           [0.745,1]                 [0.816,1]
+## 3           [0,0.247)                 [0,0.295)
+## 4           [0.745,1]                 [0,0.295)
+## 5       [0.497,0.745)                 [0,0.295)
+## 6       [0.247,0.497)                 [0,0.295)</code></pre>
 <p>We can see that the values are numbers with many decimal places.
 However, in several variables, some of these values repeat because they
 represent the boundaries of the intervals used for discretization.</p>
@@ -1832,20 +1836,308 @@ useful than applying an outlier detection method.</p>
 <h1>7 - DECISION TREE MODEL</h1>
 <div id="train-test-split" class="section level2">
 <h2>7.1 - Train test split</h2>
+<p><strong>A last data manipulation</strong></p>
+<p>This project is a migration of other project. When I was doing it, I
+forgot to delete the variable “Over18” until this point of the project.
+If I delete before in the script, some parts stop working because
+refactoring is needed. For now, this variable will be eliminated in this
+point of the project. The proper solution will be to delete it in the
+part of the script where all de variable elimination are done and
+refactor the code. But for now, we keep this solution.</p>
+<pre class="r"><code># We delete the variable &quot;Over18&quot;
+name &lt;- &quot;Over18&quot;
+index &lt;- match(name, names(HR_data))
+HR_data &lt;- HR_data[-index]
+
+
+
+# TO DO
+
+# ELIMINATE IT IN THE SECTION WHERE ALL THE ELIMINATIONS ARE MADE, AND REFACTOR THE CODE. ALSO DELETING THIS CODE AFTER REFACTORING</code></pre>
+<p><strong>Continuation with the project</strong></p>
 <p>Before starting with the selection of the training and test samples,
 we are going to choose only the variables with which we will build the
 model. We will consider 2 things for this; first, we will not select
 more than one version of the the same variable, and second, we will
 choose only the most important/relevant ones for building our model.</p>
-<p>The discrete/standardized versions of some variables we have created
-are at the end of the dataset, from variable 34 onwards. Therefore, we
-will only select the first 33 to build the model. Since a rule-based
-model requires understanding the meaning of the variables, we will
-choose the original variables, to improve the interpretability of the
-model.</p>
+<p>The discrete/standardized versions of some variables that we
+previouslty created are at the end of the dataset, from variable 34
+onwards. Therefore, we will only select the first 33 to build the model.
+Since a rule-based model requires understanding the meaning of the
+variables, we will choose the original variables, to improve the
+interpretability of the model.</p>
+<pre class="r"><code># We select all the original variables.
+split_dat &lt;- HR_data[1:33]
+# Previously we also created some new variables, based on the value of others. For creating the decision tree we will only use the new variables, so we will discard the variables used for creating them.
+
+# We save in a vector their names
+discard_vars &lt;- c(&quot;JobSatisfaction&quot;, &quot;EnvironmentSatisfaction&quot;, &quot;RelationshipSatisfaction&quot;)
+# We discard these variables
+indexes_eliminate &lt;- match(discard_vars, colnames(split_dat))
+split_dat &lt;- split_dat[-indexes_eliminate]
+# Mostramos cuantas columnas nos quedan en el dataset
+ncol(split_dat)</code></pre>
+<pre><code>## [1] 30</code></pre>
+<p>We still have a lot of variables. We will select only the most
+important ones, because having too many variables increases the risk of
+including irrelevant variables in the training, which can also have an
+impact on the predictions.</p>
+<pre class="r"><code># We load the required packages for doing the study of the importance of the variables
+library(RWekajars)
+library(RWeka)
+library(FSelector)
+
+# We create a dataframe to store the results of the evaluation of each variable&#39;s importance
+results_df &lt;- data.frame()
+
+# First we iterate over each column of the dataset
+for (var in colnames(split_dat[-2])) {
+  # We create a formula which includes the variable &quot;Attrition&quot; and the iterated variable, that will have to format &quot;Attrition ~ var&quot;
+  formula &lt;- as.formula(paste(&quot;Attrition ~&quot;, var))
+  # We store in a variable the information gain of each iterated variable
+  info_gain &lt;- information.gain(formula, split_dat)
+  # We add the result to the dataframe with the results
+  results_df &lt;- rbind(results_df, info_gain)
+}
+
+
+# Now we sho the final datarame sorting the rows by the values of the column created for measuring the importance of the variable
+results_df &lt;- data.frame(results_df[order(results_df$attr_importance),,drop=FALSE])
+results_df</code></pre>
+<pre><code>##                         attr_importance
+## DailyRate                  0.000000e+00
+## DistanceFromHome           0.000000e+00
+## HourlyRate                 0.000000e+00
+## MonthlyRate                0.000000e+00
+## NumCompaniesWorked         0.000000e+00
+## PercentSalaryHike          0.000000e+00
+## TrainingTimesLastYear      0.000000e+00
+## YearsSinceLastPromotion    0.000000e+00
+## PerformanceRating          4.158349e-06
+## Gender                     4.372823e-04
+## Education                  1.088435e-03
+## High_satisfaction          1.641157e-03
+## Department                 3.568144e-03
+## WorkLifeBalance            4.786845e-03
+## EducationField             5.068077e-03
+## Low_satisfaction           6.118896e-03
+## BusinessTravel             8.081713e-03
+## JobInvolvement             8.732048e-03
+## YearsInCurrentRole         1.307347e-02
+## MaritalStatus              1.496588e-02
+## Age                        1.646181e-02
+## YearsWithCurrManager       1.826648e-02
+## YearsAtCompany             1.885243e-02
+## TotalWorkingYears          2.019828e-02
+## MonthlyIncome              2.076296e-02
+## StockOptionLevel           2.098402e-02
+## JobLevel                   2.179277e-02
+## OverTime                   2.768761e-02
+## JobRole                    3.024106e-02</code></pre>
+<p>Some variables have very low importance. We will use a threshold of
+0.005 for using a variable to train the model. Any variable with an
+importance lower than that value will be discarded.</p>
+<pre class="r"><code># We save in a vector the names of the variables not matching the previous condition
+less_importance &lt;- row.names(results_df)[1:14]
+# We discard them
+indexes_to_eliminate &lt;- match(less_importance, colnames(split_dat))
+split_dat &lt;- split_dat[-indexes_to_eliminate]</code></pre>
+<p>Now we will define a parameter that will control the splitting of the
+dataset.</p>
+<pre class="r"><code>set.seed(7)
+# The proportion of the data for the test dataset will be 1/5
+split_prop &lt;- 5
+# We define the indexes of the dataset for the test dynamically
+indexes &lt;- sample(1:nrow(split_dat), size=floor(((split_prop-1)/split_prop)*nrow(split_dat)))
+
+# We select the rows corresponding to these indices for the training set, and all indices that are not in the indexes vector for the test set.
+train_dat &lt;- split_dat[indexes,]
+test_dat &lt;- split_dat[-indexes,]</code></pre>
+<p>We used a proportion of 1/5 for splitting the dataset into test and
+train sets, because the size of the dataset is not too small (in that
+case, using a similar length for both datasets would be better), but the
+size is not too big (if it had hundreds of thousands of observations, we
+could have used a smaller proportion for the split).</p>
 </div>
 <div id="training-the-model" class="section level2">
 <h2>7.2 - Training the model</h2>
+<p>Our target variable is the variable <strong>Attrition</strong>, if we
+read the dictionary that we have created at the beginning of the
+project, we can see that this variable indicates whether an employee has
+left the organization.</p>
+<p>We will create a decision tree model for predicting this
+variable.</p>
+<pre class="r"><code>set.seed(7)
+# We load the C50 library, which implements a decision tree model
+library(C50)
+# We save inside a vector the names of all trainig variables (except &quot;Attrition&quot;)
+columns_for_model &lt;- setdiff(names(train_dat), &quot;Attrition&quot;)
+# We create a rules based model, initially using the default algorithm (without any parameter)
+defalut_model &lt;- C5.0(train_dat[columns_for_model], train_dat$Attrition, rules=TRUE)
+# We save a summary of the model
+sumary_model &lt;- summary(defalut_model)
+# Before showing the model, we will show a frequency table of the target variable
+table(train_dat$Attrition)</code></pre>
+<pre><code>## 
+##   0   1 
+## 985 191</code></pre>
+<p>We see that the “1” category (the employee will leave his job)
+appears much less frequently than the “0” category. We will consider
+this when analysing the results of the model.</p>
+<pre class="r"><code>sumary_model</code></pre>
+<pre><code>## 
+## Call:
+## C5.0.default(x = train_dat[columns_for_model], y = train_dat$Attrition, rules
+##  = TRUE)
+## 
+## 
+## C5.0 [Release 2.07 GPL Edition]      Sun Aug 18 19:20:34 2024
+## -------------------------------
+## 
+## Class specified by attribute `outcome&#39;
+## 
+## Read 1176 cases (16 attributes) from undefined.data
+## 
+## Rules:
+## 
+## Rule 1: (69/2, lift 1.1)
+##  Age &lt;= 31
+##  BusinessTravel = Travel_Rarely
+##  EducationField = Medical
+##  OverTime = 0
+##  -&gt;  class 0  [0.958]
+## 
+## Rule 2: (103/5, lift 1.1)
+##  BusinessTravel = Non-Travel
+##  OverTime = 0
+##  -&gt;  class 0  [0.943]
+## 
+## Rule 3: (573/41, lift 1.1)
+##  Age &gt; 31
+##  OverTime = 0
+##  -&gt;  class 0  [0.927]
+## 
+## Rule 4: (610/45, lift 1.1)
+##  JobRole in {Healthcare Representative, Manager, Manufacturing Director,
+##                     Research Director, Research Scientist, Sales Executive}
+##  OverTime = 0
+##  -&gt;  class 0  [0.925]
+## 
+## Rule 5: (45/3, lift 1.1)
+##  EducationField = Other
+##  OverTime = 0
+##  -&gt;  class 0  [0.915]
+## 
+## Rule 6: (1083/148, lift 1.0)
+##  TotalWorkingYears &gt; 2
+##  -&gt;  class 0  [0.863]
+## 
+## Rule 7: (10, lift 5.6)
+##  Age &lt;= 31
+##  EducationField in {Marketing, Technical Degree}
+##  JobRole in {Laboratory Technician, Sales Representative}
+##  TotalWorkingYears &lt;= 2
+##  -&gt;  class 1  [0.917]
+## 
+## Rule 8: (9, lift 5.6)
+##  Age &lt;= 31
+##  BusinessTravel = Travel_Frequently
+##  JobRole in {Laboratory Technician, Sales Representative}
+##  TotalWorkingYears &lt;= 2
+##  -&gt;  class 1  [0.909]
+## 
+## Rule 9: (7, lift 5.5)
+##  Age &lt;= 31
+##  BusinessTravel = Travel_Rarely
+##  EducationField = Life Sciences
+##  JobRole = Laboratory Technician
+##  TotalWorkingYears &lt;= 2
+##  -&gt;  class 1  [0.889]
+## 
+## Rule 10: (14/1, lift 5.4)
+##  JobInvolvement in {1, 2}
+##  MonthlyIncome &lt;= 2468
+##  OverTime = 1
+##  TotalWorkingYears &gt; 2
+##  -&gt;  class 1  [0.875]
+## 
+## Rule 11: (6, lift 5.4)
+##  JobRole = Laboratory Technician
+##  MaritalStatus = Single
+##  MonthlyIncome &gt; 2468
+##  OverTime = 1
+##  YearsAtCompany &lt;= 7
+##  -&gt;  class 1  [0.875]
+## 
+## Rule 12: (19/2, lift 5.3)
+##  JobInvolvement = 3
+##  MonthlyIncome &lt;= 2468
+##  OverTime = 1
+##  YearsInCurrentRole &lt;= 2
+##  -&gt;  class 1  [0.857]
+## 
+## Rule 13: (5, lift 5.3)
+##  JobRole = Human Resources
+##  TotalWorkingYears &lt;= 2
+##  -&gt;  class 1  [0.857]
+## 
+## Rule 14: (25/5, lift 4.8)
+##  OverTime = 1
+##  TotalWorkingYears &lt;= 2
+##  -&gt;  class 1  [0.778]
+## 
+## Rule 15: (22/5, lift 4.6)
+##  JobRole = Sales Executive
+##  MaritalStatus = Single
+##  MonthlyIncome &gt; 4559
+##  OverTime = 1
+##  -&gt;  class 1  [0.750]
+## 
+## Rule 16: (53/13, lift 4.6)
+##  MonthlyIncome &lt;= 2468
+##  OverTime = 1
+##  -&gt;  class 1  [0.745]
+## 
+## Rule 17: (26/9, lift 4.0)
+##  JobRole = Sales Executive
+##  MaritalStatus = Single
+##  OverTime = 1
+##  -&gt;  class 1  [0.643]
+## 
+## Default class: 0
+## 
+## 
+## Evaluation on training data (1176 cases):
+## 
+##          Rules     
+##    ----------------
+##      No      Errors
+## 
+##      17  120(10.2%)   &lt;&lt;
+## 
+## 
+##     (a)   (b)    &lt;-classified as
+##    ----  ----
+##     973    12    (a): class 0
+##     108    83    (b): class 1
+## 
+## 
+##  Attribute usage:
+## 
+##   95.83% TotalWorkingYears
+##   75.00% OverTime
+##   56.80% JobRole
+##   56.46% Age
+##   15.99% BusinessTravel
+##   11.14% EducationField
+##    6.89% MonthlyIncome
+##    2.81% JobInvolvement
+##    2.72% MaritalStatus
+##    1.62% YearsInCurrentRole
+##    0.51% YearsAtCompany
+## 
+## 
+## Time: 0.0 secs</code></pre>
 </div>
 <div id="evaluating-the-model" class="section level2">
 <h2>7.3 - Evaluating the model</h2>

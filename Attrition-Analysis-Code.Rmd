@@ -467,6 +467,10 @@ HR_data$Low_satisfaction <- ifelse(
   (HR_data$EnvironmentSatisfaction == min(HR_data$EnvironmentSatisfaction)) +
   (HR_data$RelationshipSatisfaction == min(HR_data$RelationshipSatisfaction)) >= 2,
                                    1, 0)
+
+# We also transform other some numeric variables to factor, including those that we have just created (we use the same procedure as before, but with other variables. We do it separately for having more modularity in the transformation of both types of variables)
+factor_var <- c("Attrition", "Education", "EnvironmentSatisfaction", "JobInvolvement", "JobSatisfaction", "OverTime", "PerformanceRating", "RelationshipSatisfaction", "StockOptionLevel", "WorkLifeBalance", "High_satisfaction", "Low_satisfaction")
+HR_data[factor_var] <- lapply(HR_data[factor_var], as.factor)
 ```
 
 ## 3.4 - Outliers handling
@@ -641,8 +645,6 @@ The resources consulted for this section are as follows:
 - Third: documentation of the function "svd"
 
 - Forth: https://www.displayr.com/singular-value-decomposition-in-r/#:~:text=This%20post%20is%20going%20to,tutorial%20and%20discuss%20SVD%20properties
-
-
 
 From this point of the project, multiple models (supervised models, unsupervised models, statistical models...)
 
@@ -892,11 +894,122 @@ We see that the mean value of the sum of squared distances to the centroid diffe
 
 ## 7.1 - Train test split
 
+**A last data manipulation**
+
+This project is a migration of other project. When I was doing it, I forgot to delete the variable "Over18" until this point of the project. If I delete before in the script, some parts stop working because refactoring is needed. For now, this variable will be eliminated in this point of the project. The proper solution will be to delete it in the part of the script where all de variable elimination are done and refactor the code. But for now, we keep this solution.
+
+```{r}
+# We delete the variable "Over18"
+name <- "Over18"
+index <- match(name, names(HR_data))
+HR_data <- HR_data[-index]
+
+
+
+# TO DO
+
+# ELIMINATE IT IN THE SECTION WHERE ALL THE ELIMINATIONS ARE MADE, AND REFACTOR THE CODE. ALSO DELETING THIS CODE AFTER REFACTORING
+```
+
+**Continuation with the project**
+
 Before starting with the selection of the training and test samples, we are going to choose only the variables with which we will build the model. We will consider 2 things for this; first, we will not select more than one version of the the same variable, and second, we will choose only the most important/relevant ones for building our model.
 
-The discrete/standardized versions of some variables we have created are at the end of the dataset, from variable 34 onwards. Therefore, we will only select the first 33 to build the model. Since a rule-based model requires understanding the meaning of the variables, we will choose the original variables, to improve the interpretability of the model.
+The discrete/standardized versions of some variables that we previouslty created are at the end of the dataset, from variable 34 onwards. Therefore, we will only select the first 33 to build the model. Since a rule-based model requires understanding the meaning of the variables, we will choose the original variables, to improve the interpretability of the model.
+
+```{r}
+# We select all the original variables.
+split_dat <- HR_data[1:33]
+# Previously we also created some new variables, based on the value of others. For creating the decision tree we will only use the new variables, so we will discard the variables used for creating them.
+
+# We save in a vector their names
+discard_vars <- c("JobSatisfaction", "EnvironmentSatisfaction", "RelationshipSatisfaction")
+# We discard these variables
+indexes_eliminate <- match(discard_vars, colnames(split_dat))
+split_dat <- split_dat[-indexes_eliminate]
+# Mostramos cuantas columnas nos quedan en el dataset
+ncol(split_dat)
+```
+
+We still have a lot of variables. We will select only the most important ones, because having too many variables increases the risk of including irrelevant variables in the training, which can also have an impact on the predictions.
+
+```{r, warning=FALSE}
+# We load the required packages for doing the study of the importance of the variables
+library(RWekajars)
+library(RWeka)
+library(FSelector)
+
+# We create a dataframe to store the results of the evaluation of each variable's importance
+results_df <- data.frame()
+
+# First we iterate over each column of the dataset
+for (var in colnames(split_dat[-2])) {
+  # We create a formula which includes the variable "Attrition" and the iterated variable, that will have to format "Attrition ~ var"
+  formula <- as.formula(paste("Attrition ~", var))
+  # We store in a variable the information gain of each iterated variable
+  info_gain <- information.gain(formula, split_dat)
+  # We add the result to the dataframe with the results
+  results_df <- rbind(results_df, info_gain)
+}
+
+
+# Now we sho the final datarame sorting the rows by the values of the column created for measuring the importance of the variable
+results_df <- data.frame(results_df[order(results_df$attr_importance),,drop=FALSE])
+results_df
+```
+
+Some variables have very low importance. We will use a threshold of 0.005 for using a variable to train the model. Any variable with an importance lower than that value will be discarded.
+
+```{r}
+# We save in a vector the names of the variables not matching the previous condition
+less_importance <- row.names(results_df)[1:14]
+# We discard them
+indexes_to_eliminate <- match(less_importance, colnames(split_dat))
+split_dat <- split_dat[-indexes_to_eliminate]
+```
+
+Now we will define a parameter that will control the splitting of the dataset.
+
+```{r}
+set.seed(7)
+# The proportion of the data for the test dataset will be 1/5
+split_prop <- 5
+# We define the indexes of the dataset for the test dynamically
+indexes <- sample(1:nrow(split_dat), size=floor(((split_prop-1)/split_prop)*nrow(split_dat)))
+
+# We select the rows corresponding to these indices for the training set, and all indices that are not in the indexes vector for the test set.
+train_dat <- split_dat[indexes,]
+test_dat <- split_dat[-indexes,]
+```
+
+We used a proportion of 1/5 for splitting the dataset into test and train sets, because the size of the dataset is not too small (in that case, using a similar length for both datasets would be better), but the size is not too big (if it had hundreds of thousands of observations, we could have used a smaller proportion for the split).
 
 ## 7.2 - Training the model
+
+Our target variable is the variable **Attrition**, if we read the dictionary that we have created at the beginning of the project, we can see that this variable indicates whether an employee has left the organization.
+
+We will create a decision tree model for predicting this variable.
+
+```{r, warning=FALSE}
+set.seed(7)
+# We load the C50 library, which implements a decision tree model
+library(C50)
+# We save inside a vector the names of all trainig variables (except "Attrition")
+columns_for_model <- setdiff(names(train_dat), "Attrition")
+# We create a rules based model, initially using the default algorithm (without any parameter)
+defalut_model <- C5.0(train_dat[columns_for_model], train_dat$Attrition, rules=TRUE)
+# We save a summary of the model
+sumary_model <- summary(defalut_model)
+# Before showing the model, we will show a frequency table of the target variable
+table(train_dat$Attrition)
+```
+
+We see that the "1" category (the employee will leave his job) appears much less frequently than the "0" category. We will consider this when analysing the results of the model.
+
+```{r}
+sumary_model
+```
+
 
 ## 7.3 - Evaluating the model
 
