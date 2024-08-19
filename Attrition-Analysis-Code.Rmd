@@ -12,20 +12,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 1 - INTRODUCTION
+# 1 - INTRODUCTION.
 
-## 1.1 - R Markdown
+## 1.1 - R Markdown.
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>. In this project I will keep available this Markdown file, and also the result from exporting it to HTML. The markdown file will have a plain text format, but the HTML file will have a nice formatted aspect.
 
-## 1.2 - Goal of the project
+## 1.2 - Goal of the project.
 
-The objective of this project will be to describe and explain how job abandonment occurs. Specifically, associations between different variables and job abandonment will be sought in order to describe when this occurs and to establish possible explanations for the phenomenon. Multiple techniques will be used for variable manipulation, data cleaning, data exploration, and clustering models to try to identify specific groups. The main goal is to explore the functioning of the algorithms and demonstrate ways of working with data, rather than creating the best model. For this secondary objective, multiple iterations of different actions performed in this script may be necessary for finding the best model.
+The objective of this project will be to describe and explain how job abandonment occurs. Specifically, associations between different variables and job abandonment will be sought in order to describe when this occurs and to establish possible explanations for the phenomenon. Multiple techniques will be used for variable manipulation, data cleaning, data exploration, and clustering models to try to identify specific groups. The main goal is to explore the functioning of the algorithms and demonstrate ways of working with data at the time that we attempt a specific goal, rather than creating the best model. For this secondary objective, multiple iterations of different actions performed in this script may be necessary.
 
 
-## 1.3 - Dataset description
+## 1.3 - Dataset description.
 
-The selected dataset comes from the field of human resource management. The name of the dataset is "Employee Attrition and Factors". Each row corresponds to a specific employee of the company and includes some demographic variables such as age and education level (among others) containing additionally multiple variables describing the job position, such as the frequency of work-related travel, the department in which the employee works, and the distance between the workplace and the employee's home. Therefore, this dataset provides data that allows for the analysis of job abandonment from both a professional and personal perspective, making it ideal for the initial objective of describing and explaining job abandonment.
+The selected dataset, which comes from the field of human resource management, is named "Employee Attrition and Factors". Each row corresponds to a specific employee of the company and includes some demographic variables such as age and education level (among others) containing additionally multiple variables describing the job position, such as the frequency of work-related travel, the department in which the employee works, and the distance between the workplace and the employee's home. Therefore, this dataset provides data that allows for the analysis of job abandonment from both a professional and personal perspective, making it ideal for the initial objective of describing and explaining job abandonment.
 
 The dataset is available in Kaeggle: https://www.kaggle.com/datasets/thedevastator/employee-attrition-and-factors
 
@@ -102,9 +102,9 @@ The name and meaning/description of the variables are presented below:
     
 **YearsWithCurrManager**: The number of years the employee has been with their current manager. (Numerical)
 
-# 2. EXPLORATORY DATA ANALYSIS (EDA)
+# 2. EXPLORATORY DATA ANALYSIS (EDA).
 
-## 2.1 - Number of variables of each type
+## 2.1 - Number of variables of each type.
 
 ```{r}
 # Load the data
@@ -114,7 +114,7 @@ HR_data <- read.csv("WokingAttrition.csv")
 barplot(table(sapply(HR_data, class)), col = "aquamarine")
 ```
 
-## 2.2 - Analysing character variables
+## 2.2 - Analysing character variables.
 
 Since we have multiple variables in the dataset, we will try to make the exploratory analysis more manageable. First, we will focus on the character variables, and after on the numeric variables.
 
@@ -132,7 +132,7 @@ colnames(character_var)
 sapply(character_var, function(x) length(unique(x)))
 ```
 
-### 2.1.1 - Character variables with 1 cathegory
+### 2.1.1 - Character variables with 1 cathegory.
 
 Only observing the number of unique values we can observe some interesting things. First, "Over18" has only 1 unique value. In addition, there are multiple variables with only 2 or 3 unique values, and just 2 variable have more than 3 unique values. We will explore this variables starting from those that have less unique values to those that have more.
 
@@ -143,7 +143,7 @@ unique(HR_data$Over18)
 
 We can see that the unique value is "Y". This indicates that all individuals are adults. In the data cleaning process, we will discard this variable, as is a constant that we already know from this point about the dataset.
 
-### 2.1.2 - Character variables with 2 or 3 cathegories
+### 2.1.2 - Character variables with 2 or 3 cathegories.
 
 Now, we will make a graphical representation of the variables with 2 and 3 unique values.
 
@@ -166,7 +166,7 @@ data_long <- data_2_3_unique %>%
 data_long
 ```
 
-**GRAPHICAL REPRESENTATION OF VARIABLES WITH 2 AND 3 CATHEGORIES**
+**GRAPHICAL REPRESENTATION OF VARIABLES WITH 2 AND 3 CATHEGORIES.**
 
 Now we are going to represent this data graphicaly. On the x-axis, will be included each variable, and on the y-axis, the height represents the proportion of each category. For each variable, we will fill the figure based on the proportion that each category appears within the variable. We will create a bar chart using the values displayed in the dataframe.
 
@@ -186,7 +186,7 @@ ggplot(data_long, aes(x = Variable, y = Prop, fill = Category)) +
 
 In this chart we can observe several things. First, for binary variables, in all cases, one of the variables is somewhat or significantly more dominant than the others (the proportion is not close to 50/50 in any case). On the other hand, regarding the variables with 3 categories, several aspects can also be considered. First, in the 'Department' variable, there are only 3 unique values. This indicates that the sample is not representative of all types of jobs that might exist, but rather that it likely comes from a specific sector (since most of the workers in the sample are in the Research and Development department). Additionally, the 'Human Resources' category is underrepresented (only 4.3% of the cases). Regarding 'BusinessTravel,' we see a clear predominance of people who rarely travel over those who travel frequently or do not travel at all. Finally, concerning the 'MaritalStatus' variable, there is some balance between the proportions of the 3 categories, with only a slight predominance of the 'Married' category.
 
-### 2.1.3 - Other character variables
+### 2.1.3 - Other character variables.
 
 After analyzing the character variables with little unique values, we will analyse the others character variables.
 
@@ -201,7 +201,7 @@ data.frame(table(rest_character_var[2]))
 
 We see that for both variables, the categories are limited to a really speciffic field. It seems as though this data is related to the healthcare sector, and includes some complementary departments like Marketing or Human Resources. The number of employees in each category varies significantly across all categories.
 
-## 2.2 - Cathegoric variables stored as numeric
+## 2.2 - Cathegoric variables stored as numeric.
 
 Once the analysis with the variables stored as "character" in the dataset is complete, we will start analyzing the numeric variables. First we will analyze some variables that were marked as categorical in the previously created variable dictionary, but which we did not find among the character class variables, specifically:
 
@@ -219,7 +219,7 @@ str(df_aux)
 
 We see that in all these cases, these are variables whose values are encoded as numbers (integers), but on the download page, they are recorded as categorical. Therefore, the numbers probably represent categories whose values we cannot necessarily treat as continuous. Given the names, descriptions and data type (integer) of the variables, we should probably interpret these values as ordinal. In other words, with these variables, we can determine in which observation there are higher levels of a certain variable, but we cannot make arithmetic comparisons between the different levels (for example, we cannot say that 2 represents double of 1 in a speccific variable, we only knwo that 2 is higher than 1).
 
-We will create an histogram in order to understand how this variables are
+We will create an histogram in order to understand how this variables are.
 
 ```{r}
 par(mfrow = c(1,2))
@@ -232,9 +232,9 @@ for (var in colnames(df_aux)) {
 
 If we look at the histogram, we find very limited ranges for these variables (which is typical in ordinal variables). For all the values of the variables, there are bars with a minimum number of observations so that they are identifiable. The only issue we could point out is that since there are no labels showing the meaning of each value, we cannot distinguish whether the maximum and minimum values are the theoretical of the variable, or just the maximums/minimums within this sample. It could be the case that these variables could have been scored above or below the maximums/minimums shown, but this values weren't in this sample. Since the download page doesn't provide clarifications about the range these variables can take, we can't be certain about this. To address this issue, when we will prepare the data, we will create some variables from these to allow us to establish clear differences between the subjects if we use these variables.
 
-## 2.3 - Other numeric variables
+## 2.3 - Other numeric variables.
 
-### 2.3.1 - General exploration
+### 2.3.1 - General exploration.
 
 Now we will analyse the rest of the numeric variables.
 
@@ -263,7 +263,7 @@ The variables shown in this summary that appear to be ordinal are: RelationshipS
 
 In all these cases, the maximum and minimum values are between 0 and 4. Additionally, all summary statistics, except for the mean, are integers, and if we consider their names and definitions, in none of the cases can the values be interpreted as a specific quantity of a magnitude (the names do not refer to specific physical objects that can be measured directly). This leads us to suspect that their values are indeed ordinal.
 
-### 2.3.2 - Variables that seem cathegoric, but are stored and described as numeric
+### 2.3.2 - Variables that seem cathegoric, but are stored and described as numeric.
 
 Next, we will display histograms of all these variables to see their distributions.
 
@@ -282,7 +282,7 @@ sapply(numeric_var[ordinal_names], function(x) length(unique(x)))
 
 We can see that their values are discrete since each one has the same number of unique values as bars in the histogram. They seem to be values from a questionnaire or some index with a score that is always an integer. Therefore, we encounter the same issue as before: we don't know if the minimum and maximum observed in this sample are the true minimum and maximum values that these variables can take, or if they could actually have higher or lower values. Additionally, we do not know the exact meaning of each level of the categories of these variables. Therefore, when using these variables in analyses, we must be cautious about the specific interpretations made about the meaning of their magnitudes.
 
-### 2.3.3 - Univariate outliers of numeric continuous variables
+### 2.3.3 - Univariate outliers of numeric continuous variables.
 
 The rest of the quantitative variables do not seem to have any peculiarities that would lead us to think they should be excluded or that they are actually categorical. Let's analyze them graphically.
 
@@ -319,7 +319,7 @@ We observe that there are indeed variables without outliers. On the other hand, 
 
 Another aspect to observe is that in all the variables involving the temporal dimension (those that have 'Year' in their name), there are outliers, what raise suspicions that these outliers might be related to each other. We will display a correlation matrix of the quantitative variables to understand the relationships between all variables, including the relationships between the temporal variables.
 
-### 2.3.4 - Correlations between numeric continuous variables
+### 2.3.4 - Correlations between numeric continuous variables.
 
 ```{r, warning=FALSE}
 # Import ggcorrplot
@@ -331,7 +331,7 @@ ggcorrplot(cor_numerics)
 
 There are several insights in this correlation matrix. First, all the variables that represent a temporal dimension are highly related to each other, which strengthens the previous idea that their outliers could be related. Additionally, there are other variables that correlate with the temporal ones, specifically age and monthly salary. The rest of the variables, as we can see, do not show any type of relationship. It is curious to note that the variable 'TrainingTimesLastYear' is not correlated with any variable, and in this case, it was the variable with the highest number of outliers.
 
-### 2.3.5 - Multivariate outliers and their relation with univariates
+### 2.3.5 - Multivariate outliers and their relation with univariates.
 
 We will now perform a multivariate analysis of the outliers in the variables that we have observed to be related. If there exist multivariate outliers, we will also verify if these outliers are at the same time univariate outliers. This will help us to better understand the composition of those.
 
@@ -343,6 +343,7 @@ vars_high_cor <- HR_data[names_high_cor]
 ```
 
 For studying multivariate outliers, we will use the mahalanobis_distance function from the rstatix package to calculate the Mahalanobis distance from each point to the center of the data, and mark all values that represent outliers according to this distance.
+
 ```{r, warning=FALSE}
 library("rstatix")
 vars_high_cor <- mahalanobis_distance(vars_high_cor)
@@ -389,7 +390,7 @@ colSums(vars_high_cor[vars_high_cor["is.outlier"]==TRUE,])
 
 We can see that in some variables, most of the multivariate outliers are at the same time univariate. However, in other cases, this is not happening (for example with the variable "YearsInCurrentRole", only 5 observations are univariate outliers). So we can conclude that some of the outliers of these variables are related, but not most of them (because there are a lot more univariate outliers in some cases that multivariate).
 
-## 2.4 - Missing data
+## 2.4 - Missing data.
 
 Now we will verify how many missing values are in the dataset.
 
@@ -401,9 +402,9 @@ sum(HR_data==" ")
 
 We can see that there are not missing values in this dataset. This is something positive, because we will not generate biases using imputation methods.
 
-# 3 - DATA CLEANING
+# 3 - DATA CLEANING.
 
-## 3.1 - Columns with only 1 unique value
+## 3.1 - Columns with only 1 unique value.
 
 In the previously conducted EDA, we observed that multiple columns had the same and unique value. We will eliminate these columns.
 
@@ -419,7 +420,7 @@ HR_data <- HR_data[-indexes_to_eliminate]
 HR_data <- HR_data[-(match("EmployeeNumber", names(HR_data)))]
 ```
 
-## 3.2 - Modifying some data types
+## 3.2 - Modifying some data types.
 
 We are going to change the values of the binary variables from Yes/No to 1 or 0 (which will convert the variables to numeric).
 
@@ -442,7 +443,7 @@ factor_var <- c("Department", "Gender", "MaritalStatus", "EducationField", "JobR
 HR_data[factor_var] <- lapply(HR_data[factor_var], as.factor)
 ```
 
-## 3.3 - Codification of new variables
+## 3.3 - Codification of new variables.
 
 Some of the variables we've identified as ordinal are those whose names end in "Satisfaction". For these variables, we mentioned that we don't have information about their actual range, as the dataset download link didn't provide the theoretical range for these scales. This, as we've argued, could imply that these variables might theoretically have values higher than those that are present in this sample. Therefore, if we use the values as they appear in this dataset, we won't be able to interpret them correctly (since we won't know the real meaning of each value, we can only order them without knowing if the values actually represent a high or low magnitude).
 
@@ -473,7 +474,7 @@ factor_var <- c("Attrition", "Education", "EnvironmentSatisfaction", "JobInvolve
 HR_data[factor_var] <- lapply(HR_data[factor_var], as.factor)
 ```
 
-## 3.4 - Outliers handling
+## 3.4 - Outliers handling.
 
 For handling them, we will make some tests, in order to find a good solution. We will make some transformations, and verify their effects.
 
@@ -537,7 +538,7 @@ for (column in still_outliers) {
 
 We see that in all cases, in terms of standard deviations, the maximum distance of the highest outlier from the mean has decreased. Therefore, the transformation in these cases also has the desired effect, reducing the extremity of the outliers. Consequently, we will maintain this transformation in all the variables where it has been applied, as it will help ensure that the influence of extreme values on the predictions of the model we are going to create is not as high.
 
-## 3.5 - Standardization of variables
+## 3.5 - Standardization of variables.
 
 Now we will standardize the quantitative variables of this dataset using the "min-max scaller" technique.
 
@@ -566,7 +567,7 @@ for (name in rest_scalling_vars) {
 }
 ```
 
-## 3.6 - Discretizing variables
+## 3.6 - Discretizing variables.
 
 We will also create a discretized version of each of these variables that we have standardized. This way, the final dataset will contain multiple versions of the variables, providing more options when testing which variable selection and formats work best for building a model that functions correctly for our purposes. By having variables in multiple formats, we can test different models and introduce various format combinations during training. This will allow us to see which variables and formats work best for the model we ultimately choose. We will use 'k-means' to create the intervals, as this method automatically adjusts the intervals for each partition, ensuring that the number of observations within each interval is similar.
 
@@ -596,7 +597,7 @@ head(HR_data[35:62])
 
 We can see that the values are numbers with many decimal places. However, in several variables, some of these values repeat because they represent the boundaries of the intervals used for discretization.
 
-# 4 - SINGULAR VALUES DECOMPOSITION
+# 4 - SINGULAR VALUES DECOMPOSITION.
 
 After finishing with the EDA and cleaning and manipulating the data, we will explore the dimentionality of the data. In this case we will use the tecnique "Singular values decomposition".
 
@@ -648,7 +649,7 @@ The resources consulted for this section are as follows:
 
 From this point of the project, multiple models (supervised models, unsupervised models, statistical models...)
 
-# 5 - USING A NON SUPERVISED METHOD (HIERARCHICAL CLUSTERING)
+# 5 - USING A NON SUPERVISED METHOD (HIERARCHICAL CLUSTERING).
 
 We will use an unsupervised method of **Hierarchical Clustering**, specifically an agglomerative hierarchical clustering method. For this, the following guide (is a guide in Spanish) has been consulted:
 
@@ -674,7 +675,7 @@ dat_est <- data.frame(scale(dat_est))
 head(dat_est)
 ```
 
-## 5.1 - Model creation
+## 5.1 - Model creation.
 
 Now we begin to create the model. Since we are going to create 2 models in parallel, each of the commands used will be repeated twice to store the result with each measurement scale used.
 
@@ -701,7 +702,7 @@ plot(hc_est_euc, cex = 0.01, hang = -1, main="Standarized variables")
 
 We see how there are many branches in both cases, but their shapes change depending on the scale of the variables. We didn't set the number of clusters, as this depends on where we cut the tree. This will determine how many branches there are. Each cut branch will be a different cluster. In the next step, we will determine the number of clusters that yield the most appropriate result.
 
-## 5.2 - Analysis of the results of the model
+## 5.2 - Analysis of the results of the model.
 
 We will create a function that returns a vector with the medium silhouette of the model, with diffrent number of clusters (the function will test mutiple number of clusters in each model and get the medium silhouette for each case)
 
@@ -743,7 +744,7 @@ plot(as.dendrogram(hc_norm_euc))
 rect.hclust(hc_norm_euc, k = 2, border = 3:4)
 ```
 
-## 5.3 - Conclusions
+## 5.3 - Conclusions.
 
 Depending on the scale of the variables, the effectiveness of the model changes. Although with both scales the number of clusters with the highest average silhouette is 2, when we standardize the data, the average silhouette is higher than when we normalize it. For this reason, the best model is the 2-cluster model obtained with standardized data. However, we should keep in mind that the maximum average silhouette obtained using Euclidean distance is 0.3. Thus, with this distance metric, the model does not seem to be producing very solid clusters.
 
@@ -751,7 +752,7 @@ It is also important to consider that since we are only using quantitative varia
 
 # 6 - USING DBSCAN AND OPTICS.
 
-## 6.1 - Creating the model
+## 6.1 - Creating the model.
 
 This time we will apply DBSCAN and OPTICS only to the dataset that previously gave us the best results, i.e., with the standardized variables. We will follow this working logic:
 
@@ -783,7 +784,7 @@ dbscan400_3_5 <- extractDBSCAN(optics_400, eps_cl = 3.5)
 
 Now, for inspecting the results we just need to access the objects we saved and display their results.
 
-## 6.2 - Inspecting the results
+## 6.2 - Inspecting the results.
 
 ```{r}
 # We show the results of boths models trained with OPTICS
@@ -848,7 +849,7 @@ The cluster in the first model has grown even more and now occupies almost all t
 
 The results reveal interesting patterns. With a relatively low minPts value (100), a cluster gradually forms as the eps_cl parameter increases, indicating more inclusive clustering as the neighborhood distance expands. On the other hand, when minPts is increased to 400, only noise is initially identified, reflecting significant rigidity in neighborhood definition due to the high density required to form a cluster. However, when eps_cl is raised to 3.5, a clustering pattern similar to that of the model with a lower minPts value emerges. This suggests that the data possess an underlying dense structure that only becomes evident under broader distance thresholds.
 
-## 6.3 - Getting a measure of the quality of the clustering
+## 6.3 - Getting a measure of the quality of the clustering.
 
 First, we will examine the appearance of these 2 clusters representing them with 2 principal components (to have a representation in 2 dimensions). We will to this visualization with the 2 last models.
 
@@ -890,9 +891,9 @@ print(paste0("Outside the cluster: ", average_ssw_non_cluster))
 
 We see that the mean value of the sum of squared distances to the centroid differs significantly between the points inside the cluster and those outside it. Therefore, it is clear that the cluster identified by the model is dense (at least denser than everything outside of it). However, is not clear if with this data using a method like this is more useful than applying an outlier detection method.
 
-# 7 - DECISION TREE MODEL
+# 7 - DECISION TREE MODEL.
 
-## 7.1 - Train test split
+## 7.1 - Train test split.
 
 **A last data manipulation**
 
@@ -984,7 +985,7 @@ test_dat <- split_dat[-indexes,]
 
 We used a proportion of 1/5 for splitting the dataset into test and train sets, because the size of the dataset is not too small (in that case, using a similar length for both datasets would be better), but the size is not too big (if it had hundreds of thousands of observations, we could have used a smaller proportion for the split).
 
-## 7.2 - Training the model
+## 7.2 - Training the model.
 
 Our target variable is the variable **Attrition**, if we read the dictionary that we have created at the beginning of the project, we can see that this variable indicates whether an employee has left the organization.
 
@@ -1047,7 +1048,78 @@ prunned_model <- C5.0(train_dat[columns_for_model], train_dat$Attrition, rules=T
 prunned_model
 ```
 
-The number of rules has decreased from 17 to 8. We will now evaluate this model more thoroughly than the previous one.
+The number of rules has decreased from 17 to 8.
 
-## 7.3 - Evaluating the model
+```{r}
+summary(prunned_model)
+```
 
+The number of very specific rules has decreased. However, the rule that applied to the smallest number of cases in the last model, is still present here (Rule 5: 	JobRole = Human Resources;	TotalWorkingYears <= 2). If we wanted, we could continue refining this model to find a better one. However, in this practical case we will stop here to avoid extending it excessively.
+
+We will show graphically this model, for understanding visualy how it simplifyed.
+
+```{r fig.width=13, fig.height=6,dpi=300}
+prunned_model_plot <- C5.0(train_dat[columns_for_model], train_dat$Attrition, control = C5.0Control(noGlobalPruning = FALSE, CF = 0.1))
+
+plot(prunned_model_plot, gp=gpar(fontsize=12))
+```
+
+Now we can see that the model is much more understandable than before. If this model is also better (or at least equal) for predicting both classes, we will be able to say that pruning it was something positive.
+
+We will now evaluate this model more thoroughly than the previous one.
+
+## 7.3 - Evaluating the model.
+
+For the evaluation we will create a function that will return all the metrics that we can obtain for evaluating supervised models.
+
+```{r}
+# The input of the function are all the values from the confusion matrix
+calcuateMetrics <- function(TP, TN, FP, FN) {
+    # The function will calculate all the measures used for evaluating supervised models
+    accuracy <- (TP + TN) / (TP + TN + FP + FN)
+    specificity <- TN / (TN + FP)
+    presicion <- TP / (TP + FP)
+    sensitivity <- TP / (TP + FN)
+    F_Measure <- 2 * ((presicion * sensitivity) / (presicion + sensitivity))
+    
+    # We print a formatted text showing all of these values
+    cat(paste0("Accuracy: ", round(accuracy, 2), "\n",
+               "Specificity: ", round(specificity, 2), "\n",
+               "Presicion: ", round(presicion, 2), "\n",
+               "Sensitivity: ", round(sensitivity, 2), "\n",
+               "F-Measure: ", round(F_Measure, 2), "\n"))
+}
+```
+
+Now we will use this function with the confusion matrix of this model.
+
+```{r}
+# We make predictions with the pruned model
+prediction_pruned <- predict(prunned_model, test_dat[columns_for_model])
+# We show the confusion matrix
+CrossTable(test_dat$Attrition, prediction_pruned, prop.chisq  = FALSE, prop.c = FALSE, prop.r =FALSE, dnn = c('Reality', 'Prediction'))
+```
+
+First of all, if we compare this confusion matrix with the previous one, the results of this model is slightly worse, because this model makes some more false positives -22 vs 19 that were before-, but considering that is a much more simple model, we will not consider this as a problem.
+
+Now we use the function.
+
+```{r}
+calcuateMetrics(15, 226, 22, 31)
+```
+
+With these values, we can extract some conclusions about the model. First, this model has a relatively high **accuracy** (0.81). This model could be useful for getting a general idea about possible outcomes in a company. However, the model is not extremely accurate and will make some mistakes.
+
+The value of the **specificity** (0.91) is higher than the accuracy, which indicates that the model is better for predicting the negative class than the positive. On the other hand, the low values of the **precision** (0.41) and the **sensitivity** (0.33) are indicating that the model is not very good for detecting the positive class.
+
+This interpretation is confirmed by the value of the **F-Measure** (0.36), which is low. This indicates that the model has not a good balance between the number of cases correctly detected of each class (having a worse capacity for detecting the negative class).
+
+These results represent a limitation for the situations where the model can be used. For specific detections of the positive class (i.e. determining which case will be positive), this model is contraindicated as could make mistakes, and lead to discrimination in the company that uses the model this way. However, this model could be useful for descriptive situations where the goal is to identify situations where the risk of attrition is low or high.
+
+## 7.4 - Posible improvements for the development of a better model.
+
+Given that this model has a low value in the F-Measure, is possible to improve it, and having better general results for predicting both classes (and even, if the precision were much higher, it would be possible to use this model for more specific situations and not only for general descriptions).
+
+The principal problem may stem from the unbalanced classes (there are much more cases of the negative than of the positive). Balancing them is mandatory for a better performance, some techniques for creating synthetic observation should be used, such as SMOTE (Synthetic Minority Over Sampling Technique) or ADASYN (Adaptive Synthetic Sampling Approach).
+
+Additionaly, a more thorough tuning of the model parameters model should be done. Using a grid search strategy with multiple combinations of values of the parameters of the model, combined with creating new synthetic observations, would possibly bring to find the best model for this data. If this strategy is not bringing significantly better models, new data shold be collected, specially about the positive class.
