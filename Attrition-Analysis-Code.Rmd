@@ -6,6 +6,8 @@ output:
   html_document:
     toc: true
     theme: united
+  pdf_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -1074,7 +1076,7 @@ For the evaluation we will create a function that will return all the metrics th
 
 ```{r}
 # The input of the function are all the values from the confusion matrix
-calcuateMetrics <- function(TP, TN, FP, FN) {
+calculateMetrics <- function(TP, TN, FP, FN) {
     # The function will calculate all the measures used for evaluating supervised models
     accuracy <- (TP + TN) / (TP + TN + FP + FN)
     specificity <- TN / (TN + FP)
@@ -1105,7 +1107,7 @@ First of all, if we compare this confusion matrix with the previous one, the res
 Now we use the function.
 
 ```{r}
-calcuateMetrics(15, 226, 22, 31)
+calculateMetrics(15, 226, 22, 31)
 ```
 
 With these values, we can extract some conclusions about the model. First, this model has a relatively high **accuracy** (0.81). This model could be useful for getting a general idea about possible outcomes in a company. However, the model is not extremely accurate and will make some mistakes.
@@ -1118,8 +1120,108 @@ These results represent a limitation for the situations where the model can be u
 
 ## 7.4 - Posible improvements for the development of a better model.
 
-Given that this model has a low value in the F-Measure, is possible to improve it, and having better general results for predicting both classes (and even, if the precision were much higher, it would be possible to use this model for more specific situations and not only for general descriptions).
+Given that this model has a low value in the F-Measure, is possible to improve it, and having better general results for predicting both classes (and even, if the precision were much higher, it would be possible to use this model for more specific situations and not only for general descriptions of the situation of an organisation).
 
 The principal problem may stem from the unbalanced classes (there are much more cases of the negative than of the positive). Balancing them is mandatory for a better performance, some techniques for creating synthetic observation should be used, such as SMOTE (Synthetic Minority Over Sampling Technique) or ADASYN (Adaptive Synthetic Sampling Approach).
 
 Additionaly, a more thorough tuning of the model parameters model should be done. Using a grid search strategy with multiple combinations of values of the parameters of the model, combined with creating new synthetic observations, would possibly bring to find the best model for this data. If this strategy is not bringing significantly better models, new data shold be collected, specially about the positive class.
+
+# 8 - LOGISTIC REGRESION MODEL
+
+After attempting to use some relatively complex models, and getting not very satisfactory results (the decision tree model is not effective at identifying the positive class, the hierarchical clustering has a very low average silhouette even in the best obtained result, and the DBSCAN algorithm finds only one cluster, which makes unclear if this method is much better than just using a multivariate outlier detection method). 
+
+Therefore, we will use a simpler model. We will use the logistic regression. This will serve as a benchmark. If other models are trained, they should at least work better than this one to be considered an improvement.
+
+**Note.**
+
+The best way to train this model is to verify all the statistical assumptions of the model, and only use the model if they are met. However, since we are using cross validation to evaluate its performance, we will accept not verifying them if the model performs well with other data than the training data. However, in a real scenario, where critical problems are analysed with the model, it is not a good practice to use the model without meeting the statistical assumptions as this could lead to non-generalizable results.
+
+## 8.1 - Creating the model
+
+```{r, warning=FALSE}
+set.seed(7)
+# We create a lineal model with the "glm" function from the binomial family, and using all the variables from the training dataset
+logictic_model <- glm(Attrition ~ ., data = train_dat, family = binomial)
+# We show a summary of the model
+summary(logictic_model)
+```
+
+This summary shows us which variables are statistically significant in the prediction, and the contribution of each variable (in the "Estimate" column). The values from this summary are used to predict the probability of each observation belonging to a particular class. Now we will make predictions with the model.
+
+## 8.2 - ROC curve of the model
+
+```{r}
+predictions <- predict(logictic_model, newdata = test_dat, type = "response")
+head(predictions)
+```
+
+These predictions indicate the probability that the model assigns to each observation of being positive. To determine the class of each observation, we will establish a cut-off point for the predictions. If an observation has a probability equal to or higher than this point, it will be classified as positive (class 1), but if it has a lower value, it will be classified as negative.
+
+To decide the value of this point, we will visualize the ROC curve of this model.
+
+
+```{r, warning=FALSE}
+# We will use the "ROCR" library for evaluate the model
+library(ROCR)
+# We will create a "prediction" object with which we will use the "performance" function for evaluating it
+prediction <- prediction(predictions, test_dat$Attrition)
+prf <- performance(prediction, measure = "tpr", x.measure = "fpr")
+# We graphically show the performance of the model
+plot(prf)
+```
+
+This ROC curve is moved away from the diagonal, to the upper left corner, which is something positive because it means that while the cut-off point increases, the false positives increment is slower than the true positives increment. For example, in this graph we can see a zone where the rate of false positives is still quite low (around 0.4), but the true positive rate is much more higher (around 0.8).
+
+We will try to create a model which obtains these results. For this, we will transform the values of the probabilities in 0 and 1 using different cut-off points, and establishing confusion matrices with the obtained values and the real values of the "Attrition" variable.
+
+
+## 8.3 - Searching a balanced model
+
+**We start trying a cut-off point of 0.5**
+
+```{r}
+prediccion_data <- ifelse(predictions > 0.5, 1, 0)
+# With the obtained values
+table(test_dat$Attrition, prediccion_data)
+```
+
+
+
+**We try a cut-off point of 0.25**
+
+
+```{r}
+prediccion_data <- ifelse(predictions > 0.25, 1, 0)
+# With the obtained values
+table(test_dat$Attrition, prediccion_data)
+```
+
+
+**We try a cut-off point of 0.2**
+
+```{r}
+# Probamos con 0.20
+prediccion_data <- ifelse(predictions > 0.20, 1, 0)
+# With the obtained values
+table(test_dat$Attrition,prediccion_data)
+```
+
+## 8.4 - Evaluating the selected model
+
+We will calculate the metrics of the second confusion matrix that we obtained (that whan that had the cut-off point of 0.25).
+
+```{r}
+# First, we will save as variables each type of correct and incorrect prediction
+
+# True positives
+TP <- 35
+# True negatives
+TN <- 213
+# False positives
+FP <- 35
+# False negatives
+FN <- 17
+
+# We use the previously created function for calculating the confusion matrix metrics
+calculateMetrics(TP, TN, FP, FN)
+```

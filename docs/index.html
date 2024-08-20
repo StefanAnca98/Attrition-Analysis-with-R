@@ -456,6 +456,16 @@ Training the model.</a></li>
 <li><a href="#posible-improvements-for-the-development-of-a-better-model." id="toc-posible-improvements-for-the-development-of-a-better-model.">7.4
 - Posible improvements for the development of a better model.</a></li>
 </ul></li>
+<li><a href="#logistic-regresion-model" id="toc-logistic-regresion-model">8 - LOGISTIC REGRESION MODEL</a>
+<ul>
+<li><a href="#creating-the-model" id="toc-creating-the-model">8.1 -
+Creating the model</a></li>
+<li><a href="#roc-curve-of-the-model" id="toc-roc-curve-of-the-model">8.2 - ROC curve of the model</a></li>
+<li><a href="#searching-a-balanced-model" id="toc-searching-a-balanced-model">8.3 - Searching a balanced
+model</a></li>
+<li><a href="#evaluating-the-selected-model" id="toc-evaluating-the-selected-model">8.4 - Evaluating the selected
+model</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -1377,40 +1387,40 @@ head(HR_data[35:62])</code></pre>
 ## 5               0.07142857             [0,0.272)                  [0.895,1]
 ## 6               0.14285714             [0,0.272)                  [0,0.406)
 ##   TotalWorkingYears_discret TrainingTimesLastYear_discret
-## 1               [0.29,0.46)                     [0,0.279)
-## 2              [0.46,0.646)                 [0.643,0.836)
-## 3               [0.29,0.46)                 [0.643,0.836)
-## 4               [0.29,0.46)                 [0.643,0.836)
-## 5               [0.29,0.46)                 [0.643,0.836)
-## 6               [0.29,0.46)                 [0.279,0.643)
+## 1             [0.359,0.535)                     [0,0.204)
+## 2             [0.359,0.535)                 [0.523,0.766)
+## 3             [0.359,0.535)                 [0.523,0.766)
+## 4             [0.359,0.535)                 [0.523,0.766)
+## 5             [0.359,0.535)                 [0.523,0.766)
+## 6             [0.359,0.535)                 [0.523,0.766)
 ##   YearsAtCompany_discret YearsInCurrentRole_discret
-## 1          [0.246,0.406)              [0.423,0.596)
-## 2            [0.406,0.6)                  [0.596,1]
-## 3              [0,0.246)                  [0,0.171)
-## 4            [0.406,0.6)                  [0.596,1]
-## 5              [0,0.246)              [0.171,0.423)
-## 6            [0.406,0.6)                  [0.596,1]
+## 1          [0.354,0.556)              [0.181,0.501)
+## 2          [0.354,0.556)              [0.501,0.748)
+## 3              [0,0.354)                  [0,0.181)
+## 4          [0.354,0.556)              [0.501,0.748)
+## 5              [0,0.354)              [0.181,0.501)
+## 6          [0.354,0.556)              [0.501,0.748)
 ##   YearsSinceLastPromotion_discret YearsWithCurrManager_discret   Age_discret
-## 1                       [0,0.153)                [0.391,0.577) [0.507,0.721)
-## 2                    [0.153,0.46)                    [0.577,1]     [0.721,1]
-## 3                       [0,0.153)                    [0,0.162) [0.314,0.507)
-## 4                    [0.153,0.46)                    [0,0.162) [0.314,0.507)
-## 5                    [0.153,0.46)                [0.162,0.391)     [0,0.314)
-## 6                    [0.153,0.46)                    [0.577,1] [0.314,0.507)
+## 1                       [0,0.153)                [0.512,0.747) [0.404,0.635)
+## 2                    [0.153,0.46)                [0.512,0.747)     [0.635,1]
+## 3                       [0,0.153)                    [0,0.185) [0.404,0.635)
+## 4                    [0.153,0.46)                    [0,0.185)  [0.23,0.404)
+## 5                    [0.153,0.46)                [0.185,0.512)      [0,0.23)
+## 6                    [0.153,0.46)                [0.512,0.747)  [0.23,0.404)
 ##   DailyRate_discret DistanceFromHome_discret HourlyRate_discret
-## 1     [0.476,0.735)                [0,0.157)          [0.756,1]
-## 2         [0,0.228)            [0.157,0.412)      [0.261,0.509)
-## 3         [0.735,1]                [0,0.157)          [0.756,1]
-## 4         [0.735,1]                [0,0.157)      [0.261,0.509)
-## 5     [0.228,0.476)                [0,0.157)          [0,0.261)
-## 6     [0.476,0.735)                [0,0.157)      [0.509,0.756)
+## 1     [0.483,0.739)                [0,0.105)          [0.741,1]
+## 2         [0,0.236)            [0.105,0.284)       [0.24,0.484)
+## 3         [0.739,1]                [0,0.105)          [0.741,1]
+## 4         [0.739,1]                [0,0.105)       [0.24,0.484)
+## 5     [0.236,0.483)                [0,0.105)           [0,0.24)
+## 6     [0.483,0.739)                [0,0.105)      [0.484,0.741)
 ##   MonthlyRate_discret PercentSalaryHike_discret
-## 1       [0.497,0.745)                 [0,0.248)
-## 2           [0.745,1]                 [0.793,1]
-## 3           [0,0.247)             [0.248,0.529)
-## 4           [0.745,1]                 [0,0.248)
-## 5       [0.497,0.745)                 [0,0.248)
-## 6       [0.247,0.497)                 [0,0.248)</code></pre>
+## 1       [0.497,0.745)                [0,0.0541)
+## 2           [0.745,1]                 [0.482,1]
+## 3           [0,0.247)               [0.2,0.482)
+## 4           [0.745,1]                [0,0.0541)
+## 5       [0.497,0.745)              [0.0541,0.2)
+## 6       [0.247,0.497)              [0.0541,0.2)</code></pre>
 <p>We can see that the values are numbers with many decimal places.
 However, in several variables, some of these values repeat because they
 represent the boundaries of the intervals used for discretization.</p>
@@ -1995,7 +2005,7 @@ this when analysing the results of the model.</p>
 ##  = TRUE)
 ## 
 ## 
-## C5.0 [Release 2.07 GPL Edition]      Mon Aug 19 17:24:11 2024
+## C5.0 [Release 2.07 GPL Edition]      Tue Aug 20 20:43:11 2024
 ## -------------------------------
 ## 
 ## Class specified by attribute `outcome&#39;
@@ -2232,7 +2242,7 @@ prunned_model</code></pre>
 ##  = TRUE, control = C5.0Control(noGlobalPruning = FALSE, CF = 0.1))
 ## 
 ## 
-## C5.0 [Release 2.07 GPL Edition]      Mon Aug 19 17:24:15 2024
+## C5.0 [Release 2.07 GPL Edition]      Tue Aug 20 20:43:15 2024
 ## -------------------------------
 ## 
 ## Class specified by attribute `outcome&#39;
@@ -2335,7 +2345,7 @@ one.</p>
 <p>For the evaluation we will create a function that will return all the
 metrics that we can obtain for evaluating supervised models.</p>
 <pre class="r"><code># The input of the function are all the values from the confusion matrix
-calcuateMetrics &lt;- function(TP, TN, FP, FN) {
+calculateMetrics &lt;- function(TP, TN, FP, FN) {
     # The function will calculate all the measures used for evaluating supervised models
     accuracy &lt;- (TP + TN) / (TP + TN + FP + FN)
     specificity &lt;- TN / (TN + FP)
@@ -2387,7 +2397,7 @@ makes some more false positives -22 vs 19 that were before-, but
 considering that is a much more simple model, we will not consider this
 as a problem.</p>
 <p>Now we use the function.</p>
-<pre class="r"><code>calcuateMetrics(15, 226, 22, 31)</code></pre>
+<pre class="r"><code>calculateMetrics(15, 226, 22, 31)</code></pre>
 <pre><code>## Accuracy: 0.82
 ## Specificity: 0.91
 ## Presicion: 0.41
@@ -2424,7 +2434,7 @@ model.</h2>
 to improve it, and having better general results for predicting both
 classes (and even, if the precision were much higher, it would be
 possible to use this model for more specific situations and not only for
-general descriptions).</p>
+general descriptions of the situation of an organisation).</p>
 <p>The principal problem may stem from the unbalanced classes (there are
 much more cases of the negative than of the positive). Balancing them is
 mandatory for a better performance, some techniques for creating
@@ -2437,6 +2447,175 @@ of values of the parameters of the model, combined with creating new
 synthetic observations, would possibly bring to find the best model for
 this data. If this strategy is not bringing significantly better models,
 new data shold be collected, specially about the positive class.</p>
+</div>
+</div>
+<div id="logistic-regresion-model" class="section level1">
+<h1>8 - LOGISTIC REGRESION MODEL</h1>
+<p>After attempting to use some relatively complex models, and getting
+not very satisfactory results (the decision tree model is not effective
+at identifying the positive class, the hierarchical clustering has a
+very low average silhouette even in the best obtained result, and the
+DBSCAN algorithm finds only one cluster, which makes unclear if this
+method is much better than just using a multivariate outlier detection
+method).</p>
+<p>Therefore, we will use a simpler model. We will use the logistic
+regression. This will serve as a benchmark. If other models are trained,
+they should at least work better than this one to be considered an
+improvement.</p>
+<p><strong>Note.</strong></p>
+<p>The best way to train this model is to verify all the statistical
+assumptions of the model, and only use the model if they are met.
+However, since we are using cross validation to evaluate its
+performance, we will accept not verifying them if the model performs
+well with other data than the training data. However, in a real
+scenario, where critical problems are analysed with the model, it is not
+a good practice to use the model without meeting the statistical
+assumptions as this could lead to non-generalizable results.</p>
+<div id="creating-the-model" class="section level2">
+<h2>8.1 - Creating the model</h2>
+<pre class="r"><code>set.seed(7)
+# We create a lineal model with the &quot;glm&quot; function from the binomial family, and using all the variables from the training dataset
+logictic_model &lt;- glm(Attrition ~ ., data = train_dat, family = binomial)
+# We show a summary of the model
+summary(logictic_model)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Attrition ~ ., family = binomial, data = train_dat)
+## 
+## Coefficients:
+##                                   Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)                     -2.045e+00  1.223e+00  -1.672 0.094446 .  
+## Age                             -1.984e-02  1.415e-02  -1.402 0.160912    
+## BusinessTravelTravel_Rarely      4.990e-01  3.581e-01   1.393 0.163517    
+## BusinessTravelTravel_Frequently  1.301e+00  3.887e-01   3.346 0.000819 ***
+## EducationFieldLife Sciences     -4.371e-02  8.210e-01  -0.053 0.957540    
+## EducationFieldMarketing          5.191e-01  8.715e-01   0.596 0.551454    
+## EducationFieldMedical           -8.784e-02  8.258e-01  -0.106 0.915287    
+## EducationFieldOther             -1.843e-01  8.810e-01  -0.209 0.834308    
+## EducationFieldTechnical Degree   9.539e-01  8.506e-01   1.122 0.262068    
+## JobInvolvement2                 -7.793e-01  3.765e-01  -2.070 0.038452 *  
+## JobInvolvement3                 -1.197e+00  3.603e-01  -3.323 0.000890 ***
+## JobInvolvement4                 -1.571e+00  4.949e-01  -3.174 0.001506 ** 
+## JobLevel                        -4.448e-02  3.151e-01  -0.141 0.887756    
+## JobRoleHuman Resources           1.425e+00  7.035e-01   2.025 0.042835 *  
+## JobRoleLaboratory Technician     1.603e+00  5.281e-01   3.036 0.002400 ** 
+## JobRoleManager                  -1.900e-01  8.173e-01  -0.232 0.816176    
+## JobRoleManufacturing Director   -7.369e-02  5.885e-01  -0.125 0.900345    
+## JobRoleResearch Director        -1.915e+00  1.216e+00  -1.574 0.115483    
+## JobRoleResearch Scientist        7.852e-01  5.370e-01   1.462 0.143700    
+## JobRoleSales Executive           1.043e+00  4.770e-01   2.187 0.028772 *  
+## JobRoleSales Representative      2.165e+00  6.080e-01   3.561 0.000370 ***
+## MaritalStatusMarried             3.318e-01  3.047e-01   1.089 0.276088    
+## MaritalStatusSingle              4.288e-01  4.197e-01   1.022 0.306985    
+## MonthlyIncome                    5.809e-05  8.287e-05   0.701 0.483317    
+## OverTime1                        1.701e+00  1.974e-01   8.618  &lt; 2e-16 ***
+## StockOptionLevel1               -9.746e-01  3.224e-01  -3.023 0.002504 ** 
+## StockOptionLevel2               -1.199e+00  4.656e-01  -2.575 0.010017 *  
+## StockOptionLevel3               -3.688e-01  4.840e-01  -0.762 0.446128    
+## TotalWorkingYears               -1.849e-02  2.869e-02  -0.644 0.519372    
+## YearsAtCompany                   4.172e-02  3.750e-02   1.112 0.265925    
+## YearsInCurrentRole              -1.044e-01  4.878e-02  -2.139 0.032396 *  
+## YearsWithCurrManager            -4.155e-02  5.042e-02  -0.824 0.409901    
+## Low_satisfaction1                1.172e+00  2.788e-01   4.203 2.63e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1043.47  on 1175  degrees of freedom
+## Residual deviance:  766.28  on 1143  degrees of freedom
+## AIC: 832.28
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+<p>This summary shows us which variables are statistically significant
+in the prediction, and the contribution of each variable (in the
+“Estimate” column). The values from this summary are used to predict the
+probability of each observation belonging to a particular class. Now we
+will make predictions with the model.</p>
+</div>
+<div id="roc-curve-of-the-model" class="section level2">
+<h2>8.2 - ROC curve of the model</h2>
+<pre class="r"><code>predictions &lt;- predict(logictic_model, newdata = test_dat, type = &quot;response&quot;)
+head(predictions)</code></pre>
+<pre><code>##          1          8         11         17         33         35 
+## 0.33381554 0.06797078 0.03604116 0.06559366 0.27039335 0.19744273</code></pre>
+<p>These predictions indicate the probability that the model assigns to
+each observation of being positive. To determine the class of each
+observation, we will establish a cut-off point for the predictions. If
+an observation has a probability equal to or higher than this point, it
+will be classified as positive (class 1), but if it has a lower value,
+it will be classified as negative.</p>
+<p>To decide the value of this point, we will visualize the ROC curve of
+this model.</p>
+<pre class="r"><code># We will use the &quot;ROCR&quot; library for evaluate the model
+library(ROCR)
+# We will create a &quot;prediction&quot; object with which we will use the &quot;performance&quot; function for evaluating it
+prediction &lt;- prediction(predictions, test_dat$Attrition)
+prf &lt;- performance(prediction, measure = &quot;tpr&quot;, x.measure = &quot;fpr&quot;)
+# We graphically show the performance of the model
+plot(prf)</code></pre>
+<p><img src="data:image/png;base64,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" width="672" /></p>
+<p>This ROC curve is moved away from the diagonal, to the upper left
+corner, which is something positive because it means that while the
+cut-off point increases, the false positives increment is slower than
+the true positives increment. For example, in this graph we can see a
+zone where the rate of false positives is still quite low (around 0.4),
+but the true positive rate is much more higher (around 0.8).</p>
+<p>We will try to create a model which obtains these results. For this,
+we will transform the values of the probabilities in 0 and 1 using
+different cut-off points, and establishing confusion matrices with the
+obtained values and the real values of the “Attrition” variable.</p>
+</div>
+<div id="searching-a-balanced-model" class="section level2">
+<h2>8.3 - Searching a balanced model</h2>
+<p><strong>We start trying a cut-off point of 0.5</strong></p>
+<pre class="r"><code>prediccion_data &lt;- ifelse(predictions &gt; 0.5, 1, 0)
+# With the obtained values
+table(test_dat$Attrition, prediccion_data)</code></pre>
+<pre><code>##    prediccion_data
+##       0   1
+##   0 240   8
+##   1  32  14</code></pre>
+<p><strong>We try a cut-off point of 0.25</strong></p>
+<pre class="r"><code>prediccion_data &lt;- ifelse(predictions &gt; 0.25, 1, 0)
+# With the obtained values
+table(test_dat$Attrition, prediccion_data)</code></pre>
+<pre><code>##    prediccion_data
+##       0   1
+##   0 213  35
+##   1  17  29</code></pre>
+<p><strong>We try a cut-off point of 0.2</strong></p>
+<pre class="r"><code># Probamos con 0.20
+prediccion_data &lt;- ifelse(predictions &gt; 0.20, 1, 0)
+# With the obtained values
+table(test_dat$Attrition,prediccion_data)</code></pre>
+<pre><code>##    prediccion_data
+##       0   1
+##   0 195  53
+##   1  14  32</code></pre>
+</div>
+<div id="evaluating-the-selected-model" class="section level2">
+<h2>8.4 - Evaluating the selected model</h2>
+<p>We will calculate the metrics of the second confusion matrix that we
+obtained (that whan that had the cut-off point of 0.25).</p>
+<pre class="r"><code># First, we will save as variables each type of correct and incorrect prediction
+
+# True positives
+TP &lt;- 35
+# True negatives
+TN &lt;- 213
+# False positives
+FP &lt;- 35
+# False negatives
+FN &lt;- 17
+
+# We use the previously created function for calculating the confusion matrix metrics
+calculateMetrics(TP, TN, FP, FN)</code></pre>
+<pre><code>## Accuracy: 0.83
+## Specificity: 0.86
+## Presicion: 0.5
+## Sensitivity: 0.67
+## F-Measure: 0.57</code></pre>
 </div>
 </div>
 
