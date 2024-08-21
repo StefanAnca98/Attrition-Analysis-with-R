@@ -6,6 +6,7 @@ output:
   html_document:
     toc: true
     theme: united
+    highlight: tango
   pdf_document:
     toc: true
 ---
@@ -23,6 +24,8 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 ## 1.2 - Goal of the project.
 
 The objective of this project will be to describe and explain how job abandonment occurs. Specifically, associations between different variables and job abandonment will be sought in order to describe when this occurs and to establish possible explanations for the phenomenon. Multiple techniques will be used for variable manipulation, data cleaning, data exploration, and clustering models to try to identify specific groups. The main goal is to explore the functioning of the algorithms and demonstrate ways of working with data at the time that we attempt a specific goal, rather than creating the best model. For this secondary objective, multiple iterations of different actions performed in this script may be necessary.
+
+It is important to note that some steps in this project are designed to showcase a broad range of data science techniques, even if not all are directly interconnected or essential for the final outcome. Certain analyses were conducted to enhance understanding of the problem, and some preprocessing steps were taken to prepare the data for potential future scenarios. This approach was intentionally chosen to demonstrate a variety of data science methods and skills.
 
 
 ## 1.3 - Dataset description.
@@ -1181,37 +1184,44 @@ We will try to create a model which obtains these results. For this, we will tra
 
 ```{r}
 prediccion_data <- ifelse(predictions > 0.5, 1, 0)
-# With the obtained values
+# We create a confusion matrix with the obtained predictions
 table(test_dat$Attrition, prediccion_data)
 ```
 
+This model works better for predicting the 0 class than the last obtained decision tree, (is predicting correctly 240 cases compared with the 226 that predicted the previous model). On the other hand is predicting practically the same number of class 1 cases (14 cases compared with the 15 predicted by the last obtained decision tree), at the time that the number of false positives has decreased (in the previous model were 22, and in this one are 8). Therefore we obtained a little bit better model in this case.
 
+Anyway, we will test the predictions of the model with other values for the cut-off point. As this model is very good predicting the negative cases, but not the positive, we will decrees the cut-off point value, and consequently establish a lower requirement for consiering an observation as a positive case.
 
 **We try a cut-off point of 0.25**
 
 
 ```{r}
 prediccion_data <- ifelse(predictions > 0.25, 1, 0)
-# With the obtained values
+# We create a confusion matrix with the obtained predictions
 table(test_dat$Attrition, prediccion_data)
 ```
 
+We can see that the number of cases predicted as positive has increased, and the number of cases predicted as negative has decreased. However, the number of correct cases predicted as 0 has not decreased a lot, but the number of cases correctly classified as 1, has practically duplicated. Nevertheless, the number of false positives, has increased in a higher proportion.
+
+Even so, depending on the use given to the model, this may not be something negative. If is more important to maximize the number of positive cases detected than minimizing the number of incorrectly cases classified as positive, this model is usefull.
 
 **We try a cut-off point of 0.2**
 
 ```{r}
 # Probamos con 0.20
 prediccion_data <- ifelse(predictions > 0.20, 1, 0)
-# With the obtained values
+# We create a confusion matrix with the obtained predictions
 table(test_dat$Attrition,prediccion_data)
 ```
 
+In this case, the increment of true positives is insignificant (only 3 more cases were detected), compared with the decrease of true negatives detected (27 less cases were correctly detected). We can not say that this model is better than the previous one.
+
 ## 8.4 - Evaluating the selected model
 
-We will calculate the metrics of the second confusion matrix that we obtained (that whan that had the cut-off point of 0.25).
+We will calculate the metrics of the second confusion matrix that we obtained (that one that had the cut-off point of 0.25).
 
 ```{r}
-# First, we will save as variables each type of correct and incorrect prediction
+# First, we will save as variables each type of correct and incorrect predictions
 
 # True positives
 TP <- 35
@@ -1225,3 +1235,7 @@ FN <- 17
 # We use the previously created function for calculating the confusion matrix metrics
 calculateMetrics(TP, TN, FP, FN)
 ```
+
+We can see that the metrics of this model are better than the obtained with the last decision tree. The single metric that has decreased, is specificity (has decreased from 0.91 to 0.86). All the rest metrics are higher, and some of them have significant increases, like for example, the sensitivity (has increased from 0.33 to 0.67), and the F-Measure (has increased from 0.36 to 0.57). We can attribute this increase to the fact that the number of true negatives has not decreased hugely, but the number of true positives has duplicated. This means that the relation between the number of true positives and true negatives is better in this model.
+
+# 9 - CONCLUSIONS AND POSSIBLE IMPROVEMENTS TO THE PROJECT
