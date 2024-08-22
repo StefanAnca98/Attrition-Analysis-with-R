@@ -5,14 +5,12 @@ date: "2024-08-13"
 output:
   html_document:
     toc: true
-    theme: united
     highlight: tango
-  pdf_document:
-    toc: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, tidy.opts=list(width.cutoff=90), tidy = TRUE) 
 ```
 
 # 1 - INTRODUCTION.
@@ -111,7 +109,7 @@ The name and meaning/description of the variables are presented below:
 
 ## 2.1 - Number of variables of each type.
 
-```{r}
+```{r, tidy=TRUE}
 # Load the data
 HR_data <- read.csv("WokingAttrition.csv")
 
@@ -123,7 +121,7 @@ barplot(table(sapply(HR_data, class)), col = "aquamarine")
 
 Since we have multiple variables in the dataset, we will try to make the exploratory analysis more manageable. First, we will focus on the character variables, and after on the numeric variables.
 
-```{r}
+```{r, echo=TRUE}
 # Using "sapply" we get a vector showing which columns are character
 char_columns <- sapply(HR_data, class) == "character"
 # We save in a dataframe the character variables
@@ -163,7 +161,9 @@ data_2_3_unique <- HR_data[c("Attrition", "Gender", "OverTime", "BusinessTravel"
 # We transform this data to a long format
 data_long <- data_2_3_unique %>% 
   pivot_longer(cols = everything(), names_to = "Variable", values_to = "Category") %>%
-  count(Variable, Category) %>% #We count how many times appear each category of each variable
+  
+  #We count how many times appears each category of each variable  
+  count(Variable, Category) %>% 
   group_by(Variable) %>% # We group by variable
   mutate(Prop=n/sum(n)) # We calculate the proportion of each category
 
@@ -179,11 +179,13 @@ Now we are going to represent this data graphicaly. On the x-axis, will be inclu
 # Initialization of ggplot graph
 ggplot(data_long, aes(x = Variable, y = Prop, fill = Category)) +
   geom_bar(stat = "identity") +
-  # Text is added to axes, title, and for each category represented
+  
+# Text is added to axes, title, and for each category represented
   geom_text(aes(label = paste0(Category, "\n", round(Prop * 100, 1), "%")), 
-            position = position_stack(vjust = 0.6), size=4) +
+  position = position_stack(vjust = 0.6), size=4) +
   labs(y = "Proportion", title = "Proportion of values of the variables with 2 or 3 unique values") +
-  # The legend text will have an angle
+  
+# The legend text will have an angle
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 20, hjust = 1, size = 15),
   )
@@ -902,7 +904,7 @@ We see that the mean value of the sum of squared distances to the centroid diffe
 
 **A last data manipulation**
 
-This project is a migration of other project. When I was doing it, I forgot to delete the variable "Over18" until this point of the project. If I delete before in the script, some parts stop working because refactoring is needed. For now, this variable will be eliminated in this point of the project. The proper solution will be to delete it in the part of the script where all de variable elimination are done and refactor the code. But for now, we keep this solution.
+This project is a migration of other project. When initially I did this code, I forgot to delete the variable "Over18" until this point of the project. If I delete before in the script, some parts stop working because refactoring is needed. For now, this variable will be eliminated in this point of the project. The most adequate solution will be to delete it in the part of the script where all de variable elimination are done and refactor the code. But for now, we keep this solution, because is not a serious problem.
 
 ```{r}
 # We delete the variable "Over18"
@@ -986,6 +988,9 @@ indexes <- sample(1:nrow(split_dat), size=floor(((split_prop-1)/split_prop)*nrow
 # We select the rows corresponding to these indices for the training set, and all indices that are not in the indexes vector for the test set.
 train_dat <- split_dat[indexes,]
 test_dat <- split_dat[-indexes,]
+
+nrow(train_dat)
+nrow(test_dat)
 ```
 
 We used a proportion of 1/5 for splitting the dataset into test and train sets, because the size of the dataset is not too small (in that case, using a similar length for both datasets would be better), but the size is not too big (if it had hundreds of thousands of observations, we could have used a smaller proportion for the split).
@@ -1089,9 +1094,13 @@ calculateMetrics <- function(TP, TN, FP, FN) {
     
     # We print a formatted text showing all of these values
     cat(paste0("Accuracy: ", round(accuracy, 2), "\n",
+               
                "Specificity: ", round(specificity, 2), "\n",
+               
                "Presicion: ", round(presicion, 2), "\n",
+               
                "Sensitivity: ", round(sensitivity, 2), "\n",
+               
                "F-Measure: ", round(F_Measure, 2), "\n"))
 }
 ```
@@ -1188,9 +1197,9 @@ prediccion_data <- ifelse(predictions > 0.5, 1, 0)
 table(test_dat$Attrition, prediccion_data)
 ```
 
-This model works better for predicting the 0 class than the last obtained decision tree, (is predicting correctly 240 cases compared with the 226 that predicted the previous model). On the other hand is predicting practically the same number of class 1 cases (14 cases compared with the 15 predicted by the last obtained decision tree), at the time that the number of false positives has decreased (in the previous model were 22, and in this one are 8). Therefore we obtained a little bit better model in this case.
+This model works better for predicting class 0 than the last obtained decision tree, predicting correctly 240 cases compared with the 226 predicted by the previous model. On the other hand, it predicts almost the same number of class 1 cases, 14 cases compared with the 15 predicted by the last obtained decision tree. At the same time, the number of false positives has decreased (there were 22 in the previous model, and in this one, there are 8). Therefore, we obtained a slightly better model in this case.
 
-Anyway, we will test the predictions of the model with other values for the cut-off point. As this model is very good predicting the negative cases, but not the positive, we will decrees the cut-off point value, and consequently establish a lower requirement for consiering an observation as a positive case.
+Nevertheless, we will test the model's predictions with other cut-off values. Since this model is very good at predicting the negative cases, but not the positive ones, thereby lowering the requirement for considering an observation as a positive case.
 
 **We try a cut-off point of 0.25**
 
