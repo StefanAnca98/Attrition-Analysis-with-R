@@ -546,6 +546,11 @@ on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http:
 keep available this Markdown file, and also the result from exporting it
 to HTML. The markdown file will have a plain text format, but the HTML
 file will have a nice formatted aspect.</p>
+<p>It is also important to note that if the project is visualized on a
+mobile device, the text in the code blocks may extend beyond the edges.
+When viewing this project on a mobile device, it is recommended to hold
+it in a <strong>horizontal position</strong>, as less text will extend
+beyond the edges in this orientation.</p>
 </div>
 <div id="goal-of-the-project." class="section level2">
 <h2>1.2 - Goal of the project.</h2>
@@ -677,15 +682,14 @@ character variables, and after on the numeric variables.</p>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>character_var <span class="ot">&lt;-</span> HR_data[char_columns]</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># We show their names</span></span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">colnames</span>(character_var)</span></code></pre></div>
-<pre><code>## [1] &quot;Attrition&quot;      &quot;BusinessTravel&quot; &quot;Department&quot;     &quot;EducationField&quot;
-## [5] &quot;Gender&quot;         &quot;JobRole&quot;        &quot;MaritalStatus&quot;  &quot;Over18&quot;        
-## [9] &quot;OverTime&quot;</code></pre>
+<pre><code>## [1] &quot;Attrition&quot;      &quot;BusinessTravel&quot; &quot;Department&quot;     &quot;EducationField&quot; &quot;Gender&quot;         &quot;JobRole&quot;       
+## [7] &quot;MaritalStatus&quot;  &quot;Over18&quot;         &quot;OverTime&quot;</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># We show the number of unique values of each variable</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">sapply</span>(character_var, <span class="cf">function</span>(x) <span class="fu">length</span>(<span class="fu">unique</span>(x)))</span></code></pre></div>
-<pre><code>##      Attrition BusinessTravel     Department EducationField         Gender 
-##              2              3              3              6              2 
-##        JobRole  MaritalStatus         Over18       OverTime 
-##              9              3              1              2</code></pre>
+<pre><code>##      Attrition BusinessTravel     Department EducationField         Gender        JobRole  MaritalStatus 
+##              2              3              3              6              2              9              3 
+##         Over18       OverTime 
+##              1              2</code></pre>
 <div id="character-variables-with-1-cathegory." class="section level3">
 <h3>2.1.1 - Character variables with 1 cathegory.</h3>
 <p>Only observing the number of unique values we can observe some
@@ -891,48 +895,34 @@ the subjects if we use these variables.</p>
 <span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a></span>
 <span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co"># We make a summary of these variables</span></span>
 <span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="fu">summary</span>(numeric_var)</span></code></pre></div>
-<pre><code>##       Age          DailyRate      DistanceFromHome EmployeeCount
-##  Min.   :18.00   Min.   : 102.0   Min.   : 1.000   Min.   :1    
-##  1st Qu.:30.00   1st Qu.: 465.0   1st Qu.: 2.000   1st Qu.:1    
-##  Median :36.00   Median : 802.0   Median : 7.000   Median :1    
-##  Mean   :36.92   Mean   : 802.5   Mean   : 9.193   Mean   :1    
-##  3rd Qu.:43.00   3rd Qu.:1157.0   3rd Qu.:14.000   3rd Qu.:1    
-##  Max.   :60.00   Max.   :1499.0   Max.   :29.000   Max.   :1    
-##  EmployeeNumber     HourlyRate     MonthlyIncome    MonthlyRate   
-##  Min.   :   1.0   Min.   : 30.00   Min.   : 1009   Min.   : 2094  
-##  1st Qu.: 491.2   1st Qu.: 48.00   1st Qu.: 2911   1st Qu.: 8047  
-##  Median :1020.5   Median : 66.00   Median : 4919   Median :14236  
-##  Mean   :1024.9   Mean   : 65.89   Mean   : 6503   Mean   :14313  
-##  3rd Qu.:1555.8   3rd Qu.: 83.75   3rd Qu.: 8379   3rd Qu.:20462  
-##  Max.   :2068.0   Max.   :100.00   Max.   :19999   Max.   :26999  
-##  NumCompaniesWorked PercentSalaryHike PerformanceRating
-##  Min.   :0.000      Min.   :11.00     Min.   :3.000    
-##  1st Qu.:1.000      1st Qu.:12.00     1st Qu.:3.000    
-##  Median :2.000      Median :14.00     Median :3.000    
-##  Mean   :2.693      Mean   :15.21     Mean   :3.154    
-##  3rd Qu.:4.000      3rd Qu.:18.00     3rd Qu.:3.000    
-##  Max.   :9.000      Max.   :25.00     Max.   :4.000    
-##  RelationshipSatisfaction StandardHours StockOptionLevel TotalWorkingYears
-##  Min.   :1.000            Min.   :80    Min.   :0.0000   Min.   : 0.00    
-##  1st Qu.:2.000            1st Qu.:80    1st Qu.:0.0000   1st Qu.: 6.00    
-##  Median :3.000            Median :80    Median :1.0000   Median :10.00    
-##  Mean   :2.712            Mean   :80    Mean   :0.7939   Mean   :11.28    
-##  3rd Qu.:4.000            3rd Qu.:80    3rd Qu.:1.0000   3rd Qu.:15.00    
-##  Max.   :4.000            Max.   :80    Max.   :3.0000   Max.   :40.00    
-##  TrainingTimesLastYear WorkLifeBalance YearsAtCompany   YearsInCurrentRole
-##  Min.   :0.000         Min.   :1.000   Min.   : 0.000   Min.   : 0.000    
-##  1st Qu.:2.000         1st Qu.:2.000   1st Qu.: 3.000   1st Qu.: 2.000    
-##  Median :3.000         Median :3.000   Median : 5.000   Median : 3.000    
-##  Mean   :2.799         Mean   :2.761   Mean   : 7.008   Mean   : 4.229    
-##  3rd Qu.:3.000         3rd Qu.:3.000   3rd Qu.: 9.000   3rd Qu.: 7.000    
-##  Max.   :6.000         Max.   :4.000   Max.   :40.000   Max.   :18.000    
-##  YearsSinceLastPromotion YearsWithCurrManager
-##  Min.   : 0.000          Min.   : 0.000      
-##  1st Qu.: 0.000          1st Qu.: 2.000      
-##  Median : 1.000          Median : 3.000      
-##  Mean   : 2.188          Mean   : 4.123      
-##  3rd Qu.: 3.000          3rd Qu.: 7.000      
-##  Max.   :15.000          Max.   :17.000</code></pre>
+<pre><code>##       Age          DailyRate      DistanceFromHome EmployeeCount EmployeeNumber     HourlyRate    
+##  Min.   :18.00   Min.   : 102.0   Min.   : 1.000   Min.   :1     Min.   :   1.0   Min.   : 30.00  
+##  1st Qu.:30.00   1st Qu.: 465.0   1st Qu.: 2.000   1st Qu.:1     1st Qu.: 491.2   1st Qu.: 48.00  
+##  Median :36.00   Median : 802.0   Median : 7.000   Median :1     Median :1020.5   Median : 66.00  
+##  Mean   :36.92   Mean   : 802.5   Mean   : 9.193   Mean   :1     Mean   :1024.9   Mean   : 65.89  
+##  3rd Qu.:43.00   3rd Qu.:1157.0   3rd Qu.:14.000   3rd Qu.:1     3rd Qu.:1555.8   3rd Qu.: 83.75  
+##  Max.   :60.00   Max.   :1499.0   Max.   :29.000   Max.   :1     Max.   :2068.0   Max.   :100.00  
+##  MonthlyIncome    MonthlyRate    NumCompaniesWorked PercentSalaryHike PerformanceRating
+##  Min.   : 1009   Min.   : 2094   Min.   :0.000      Min.   :11.00     Min.   :3.000    
+##  1st Qu.: 2911   1st Qu.: 8047   1st Qu.:1.000      1st Qu.:12.00     1st Qu.:3.000    
+##  Median : 4919   Median :14236   Median :2.000      Median :14.00     Median :3.000    
+##  Mean   : 6503   Mean   :14313   Mean   :2.693      Mean   :15.21     Mean   :3.154    
+##  3rd Qu.: 8379   3rd Qu.:20462   3rd Qu.:4.000      3rd Qu.:18.00     3rd Qu.:3.000    
+##  Max.   :19999   Max.   :26999   Max.   :9.000      Max.   :25.00     Max.   :4.000    
+##  RelationshipSatisfaction StandardHours StockOptionLevel TotalWorkingYears TrainingTimesLastYear
+##  Min.   :1.000            Min.   :80    Min.   :0.0000   Min.   : 0.00     Min.   :0.000        
+##  1st Qu.:2.000            1st Qu.:80    1st Qu.:0.0000   1st Qu.: 6.00     1st Qu.:2.000        
+##  Median :3.000            Median :80    Median :1.0000   Median :10.00     Median :3.000        
+##  Mean   :2.712            Mean   :80    Mean   :0.7939   Mean   :11.28     Mean   :2.799        
+##  3rd Qu.:4.000            3rd Qu.:80    3rd Qu.:1.0000   3rd Qu.:15.00     3rd Qu.:3.000        
+##  Max.   :4.000            Max.   :80    Max.   :3.0000   Max.   :40.00     Max.   :6.000        
+##  WorkLifeBalance YearsAtCompany   YearsInCurrentRole YearsSinceLastPromotion YearsWithCurrManager
+##  Min.   :1.000   Min.   : 0.000   Min.   : 0.000     Min.   : 0.000          Min.   : 0.000      
+##  1st Qu.:2.000   1st Qu.: 3.000   1st Qu.: 2.000     1st Qu.: 0.000          1st Qu.: 2.000      
+##  Median :3.000   Median : 5.000   Median : 3.000     Median : 1.000          Median : 3.000      
+##  Mean   :2.761   Mean   : 7.008   Mean   : 4.229     Mean   : 2.188          Mean   : 4.123      
+##  3rd Qu.:3.000   3rd Qu.: 9.000   3rd Qu.: 7.000     3rd Qu.: 3.000          3rd Qu.: 7.000      
+##  Max.   :4.000   Max.   :40.000   Max.   :18.000     Max.   :15.000          Max.   :17.000</code></pre>
 <p>There are several things we can observe in this summary; let’s start
 handling them one by one.</p>
 <p><strong>- Variables with the same value in all
@@ -973,10 +963,8 @@ distributions.</p>
 <p><img src="data:image/png;base64,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" width="672" /><img src="data:image/png;base64,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" width="672" /></p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># We also get the number of unique values of each variable</span></span>
 <span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="fu">sapply</span>(numeric_var[ordinal_names], <span class="cf">function</span>(x) <span class="fu">length</span>(<span class="fu">unique</span>(x)))</span></code></pre></div>
-<pre><code>## RelationshipSatisfaction          WorkLifeBalance        PerformanceRating 
-##                        4                        4                        2 
-##         StockOptionLevel 
-##                        4</code></pre>
+<pre><code>## RelationshipSatisfaction          WorkLifeBalance        PerformanceRating         StockOptionLevel 
+##                        4                        4                        2                        4</code></pre>
 <p>We can see that their values are discrete since each one has the same
 number of unique values as bars in the histogram. They seem to be values
 from a questionnaire or some index with a score that is always an
@@ -1025,14 +1013,12 @@ show univariate outliers.</p>
 <p>Therefore, we will explore how many outliers are present in each
 variable.</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">sapply</span>(not_observed_numeric, <span class="cf">function</span>(x) <span class="fu">length</span>(<span class="fu">boxplot.stats</span>(x)<span class="sc">$</span>out))</span></code></pre></div>
-<pre><code>##                     Age               DailyRate        DistanceFromHome 
-##                       0                       0                       0 
-##              HourlyRate           MonthlyIncome             MonthlyRate 
-##                       0                     114                       0 
-##      NumCompaniesWorked       PercentSalaryHike       TotalWorkingYears 
-##                      52                       0                      63 
-##   TrainingTimesLastYear          YearsAtCompany      YearsInCurrentRole 
-##                     238                     104                      21 
+<pre><code>##                     Age               DailyRate        DistanceFromHome              HourlyRate 
+##                       0                       0                       0                       0 
+##           MonthlyIncome             MonthlyRate      NumCompaniesWorked       PercentSalaryHike 
+##                     114                       0                      52                       0 
+##       TotalWorkingYears   TrainingTimesLastYear          YearsAtCompany      YearsInCurrentRole 
+##                      63                     238                     104                      21 
 ## YearsSinceLastPromotion    YearsWithCurrManager 
 ##                     107                      14</code></pre>
 <p>We observe that there are indeed variables without outliers. On the
@@ -1124,20 +1110,20 @@ all values that represent outliers according to this distance.</p>
 <span id="cb36-31"><a href="#cb36-31" tabindex="-1"></a></span>
 <span id="cb36-32"><a href="#cb36-32" tabindex="-1"></a><span class="co"># We visualize the aspect of this dataframe</span></span>
 <span id="cb36-33"><a href="#cb36-33" tabindex="-1"></a><span class="fu">head</span>(vars_high_cor)</span></code></pre></div>
-<pre><code>##   YearsWithCurrManager YearsSinceLastPromotion YearsInCurrentRole
-## 1                FALSE                   FALSE              FALSE
-## 2                FALSE                   FALSE              FALSE
-## 3                FALSE                   FALSE              FALSE
-## 4                FALSE                   FALSE              FALSE
-## 5                FALSE                   FALSE              FALSE
-## 6                FALSE                   FALSE              FALSE
-##   YearsAtCompany TotalWorkingYears   Age is.outlier
-## 1          FALSE             FALSE FALSE      FALSE
-## 2          FALSE             FALSE FALSE      FALSE
-## 3          FALSE             FALSE FALSE      FALSE
-## 4          FALSE             FALSE FALSE      FALSE
-## 5          FALSE             FALSE FALSE      FALSE
-## 6          FALSE             FALSE FALSE      FALSE</code></pre>
+<pre><code>##   YearsWithCurrManager YearsSinceLastPromotion YearsInCurrentRole YearsAtCompany TotalWorkingYears   Age
+## 1                FALSE                   FALSE              FALSE          FALSE             FALSE FALSE
+## 2                FALSE                   FALSE              FALSE          FALSE             FALSE FALSE
+## 3                FALSE                   FALSE              FALSE          FALSE             FALSE FALSE
+## 4                FALSE                   FALSE              FALSE          FALSE             FALSE FALSE
+## 5                FALSE                   FALSE              FALSE          FALSE             FALSE FALSE
+## 6                FALSE                   FALSE              FALSE          FALSE             FALSE FALSE
+##   is.outlier
+## 1      FALSE
+## 2      FALSE
+## 3      FALSE
+## 4      FALSE
+## 5      FALSE
+## 6      FALSE</code></pre>
 <p>After this process, we have obtained a dataframe where each
 observation is marked with a boolean value in each column. In the
 columns named as the variables, the boolean values indicates whether the
@@ -1146,23 +1132,19 @@ indicates whether the observation is an outlier considering the entire
 dataset as a whole.</p>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="co"># We show how many outliers there are in each column</span></span>
 <span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="fu">colSums</span>(vars_high_cor)</span></code></pre></div>
-<pre><code>##    YearsWithCurrManager YearsSinceLastPromotion      YearsInCurrentRole 
-##                      14                     107                      21 
-##          YearsAtCompany       TotalWorkingYears                     Age 
-##                     104                      63                       0 
-##              is.outlier 
-##                      44</code></pre>
+<pre><code>##    YearsWithCurrManager YearsSinceLastPromotion      YearsInCurrentRole          YearsAtCompany 
+##                      14                     107                      21                     104 
+##       TotalWorkingYears                     Age              is.outlier 
+##                      63                       0                      44</code></pre>
 <p>We can see that in some cases the number of univariate outliers is
 higher than the number of multivariate, and in others is smaller. Now we
 will verify what happens if we only observe the cases where the
 observations are mulitivariate outliers.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">colSums</span>(vars_high_cor[vars_high_cor[<span class="st">&quot;is.outlier&quot;</span>] <span class="sc">==</span> <span class="cn">TRUE</span>, ])</span></code></pre></div>
-<pre><code>##    YearsWithCurrManager YearsSinceLastPromotion      YearsInCurrentRole 
-##                       7                      26                       5 
-##          YearsAtCompany       TotalWorkingYears                     Age 
-##                      38                      26                       0 
-##              is.outlier 
-##                      44</code></pre>
+<pre><code>##    YearsWithCurrManager YearsSinceLastPromotion      YearsInCurrentRole          YearsAtCompany 
+##                       7                      26                       5                      38 
+##       TotalWorkingYears                     Age              is.outlier 
+##                      26                       0                      44</code></pre>
 <p>We can see that in some variables, most of the multivariate outliers
 are at the same time univariate. However, in other cases, this is not
 happening (for example with the variable “YearsInCurrentRole”, only 5
@@ -1442,12 +1424,10 @@ observations within each interval is similar.</p>
 <span id="cb62-8"><a href="#cb62-8" tabindex="-1"></a>scaled_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(scaled_vars, <span class="fu">paste0</span>(rest_scalling_vars, <span class="st">&quot;_scaled&quot;</span>))</span>
 <span id="cb62-9"><a href="#cb62-9" tabindex="-1"></a><span class="co"># We check all the values in this vector for ensuring that everything is correct</span></span>
 <span id="cb62-10"><a href="#cb62-10" tabindex="-1"></a>scaled_vars</span></code></pre></div>
-<pre><code>##  [1] &quot;MonthlyIncome_scaled&quot;           &quot;NumCompaniesWorked_scaled&quot;     
-##  [3] &quot;TotalWorkingYears_scaled&quot;       &quot;TrainingTimesLastYear_scaled&quot;  
-##  [5] &quot;YearsAtCompany_scaled&quot;          &quot;YearsInCurrentRole_scaled&quot;     
-##  [7] &quot;YearsSinceLastPromotion_scaled&quot; &quot;YearsWithCurrManager_scaled&quot;   
-##  [9] &quot;Age_scaled&quot;                     &quot;DailyRate_scaled&quot;              
-## [11] &quot;DistanceFromHome_scaled&quot;        &quot;HourlyRate_scaled&quot;             
+<pre><code>##  [1] &quot;MonthlyIncome_scaled&quot;           &quot;NumCompaniesWorked_scaled&quot;      &quot;TotalWorkingYears_scaled&quot;      
+##  [4] &quot;TrainingTimesLastYear_scaled&quot;   &quot;YearsAtCompany_scaled&quot;          &quot;YearsInCurrentRole_scaled&quot;     
+##  [7] &quot;YearsSinceLastPromotion_scaled&quot; &quot;YearsWithCurrManager_scaled&quot;    &quot;Age_scaled&quot;                    
+## [10] &quot;DailyRate_scaled&quot;               &quot;DistanceFromHome_scaled&quot;        &quot;HourlyRate_scaled&quot;             
 ## [13] &quot;MonthlyRate_scaled&quot;             &quot;PercentSalaryHike_scaled&quot;</code></pre>
 <div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a><span class="co"># We iterate over these names</span></span>
 <span id="cb64-2"><a href="#cb64-2" tabindex="-1"></a><span class="cf">for</span> (name <span class="cf">in</span> scaled_vars) {</span>
@@ -1459,76 +1439,55 @@ observations within each interval is similar.</p>
 <span id="cb64-8"><a href="#cb64-8" tabindex="-1"></a>}</span>
 <span id="cb64-9"><a href="#cb64-9" tabindex="-1"></a><span class="co"># We check the first values of these variables</span></span>
 <span id="cb64-10"><a href="#cb64-10" tabindex="-1"></a><span class="fu">head</span>(HR_data[<span class="dv">35</span><span class="sc">:</span><span class="dv">62</span>])</span></code></pre></div>
-<pre><code>##   MonthlyIncome_scaled NumCompaniesWorked_scaled TotalWorkingYears_scaled
-## 1            0.4163104                 0.9428090                0.4472136
-## 2            0.3635034                 0.3333333                0.5000000
-## 3            0.1272355                 0.8164966                0.4183300
-## 4            0.2021867                 0.3333333                0.4472136
-## 5            0.2473708                 1.0000000                0.3872983
-## 6            0.2154502                 0.0000000                0.4472136
-##   TrainingTimesLastYear_scaled YearsAtCompany_scaled YearsInCurrentRole_scaled
-## 1                    0.0000000             0.3872983                 0.4714045
-## 2                    0.7071068             0.5000000                 0.6236096
-## 3                    0.7071068             0.0000000                 0.0000000
-## 4                    0.7071068             0.4472136                 0.6236096
-## 5                    0.7071068             0.2236068                 0.3333333
-## 6                    0.5773503             0.4183300                 0.6236096
-##   YearsSinceLastPromotion_scaled YearsWithCurrManager_scaled Age_scaled
-## 1                      0.0000000                   0.5423261  0.5476190
-## 2                      0.2581989                   0.6416889  0.7380952
-## 3                      0.0000000                   0.0000000  0.4523810
-## 4                      0.4472136                   0.0000000  0.3571429
-## 5                      0.3651484                   0.3429972  0.2142857
-## 6                      0.4472136                   0.5940885  0.3333333
-##   DailyRate_scaled DistanceFromHome_scaled HourlyRate_scaled MonthlyRate_scaled
-## 1        0.7158196              0.00000000         0.9142857         0.69805260
-## 2        0.1267001              0.25000000         0.4428571         0.91600080
-## 3        0.9098067              0.03571429         0.8857143         0.01212608
-## 4        0.9234073              0.07142857         0.3714286         0.84581409
-## 5        0.3500358              0.03571429         0.1428571         0.58373821
-## 6        0.6463851              0.03571429         0.7000000         0.39229070
-##   PercentSalaryHike_scaled MonthlyIncome_discret NumCompaniesWorked_discret
-## 1               0.00000000         [0.272,0.484)                  [0.895,1]
-## 2               0.85714286         [0.272,0.484)                  [0,0.406)
-## 3               0.28571429             [0,0.272)              [0.694,0.895)
-## 4               0.00000000             [0,0.272)                  [0,0.406)
-## 5               0.07142857             [0,0.272)                  [0.895,1]
-## 6               0.14285714             [0,0.272)                  [0,0.406)
-##   TotalWorkingYears_discret TrainingTimesLastYear_discret
-## 1             [0.297,0.477)                     [0,0.279)
-## 2             [0.477,0.663)                   [0.633,0.8)
-## 3             [0.297,0.477)                   [0.633,0.8)
-## 4             [0.297,0.477)                   [0.633,0.8)
-## 5             [0.297,0.477)                   [0.633,0.8)
-## 6             [0.297,0.477)                 [0.279,0.633)
-##   YearsAtCompany_discret YearsInCurrentRole_discret
-## 1          [0.246,0.406)              [0.181,0.501)
-## 2            [0.406,0.6)              [0.501,0.748)
-## 3              [0,0.246)                  [0,0.181)
-## 4            [0.406,0.6)              [0.501,0.748)
-## 5              [0,0.246)              [0.181,0.501)
-## 6            [0.406,0.6)              [0.501,0.748)
-##   YearsSinceLastPromotion_discret YearsWithCurrManager_discret   Age_discret
-## 1                       [0,0.153)                [0.512,0.747) [0.404,0.635)
-## 2                    [0.153,0.46)                [0.512,0.747)     [0.635,1]
-## 3                       [0,0.153)                    [0,0.185) [0.404,0.635)
-## 4                    [0.153,0.46)                    [0,0.185)  [0.23,0.404)
-## 5                    [0.153,0.46)                [0.185,0.512)      [0,0.23)
-## 6                    [0.153,0.46)                [0.512,0.747)  [0.23,0.404)
-##   DailyRate_discret DistanceFromHome_discret HourlyRate_discret
-## 1     [0.483,0.739)                [0,0.105)          [0.789,1]
-## 2         [0,0.236)            [0.105,0.284)      [0.278,0.545)
-## 3         [0.739,1]                [0,0.105)          [0.789,1]
-## 4         [0.739,1]                [0,0.105)      [0.278,0.545)
-## 5     [0.236,0.483)                [0,0.105)          [0,0.278)
-## 6     [0.483,0.739)                [0,0.105)      [0.545,0.789)
-##   MonthlyRate_discret PercentSalaryHike_discret
-## 1       [0.497,0.745)                 [0,0.167)
-## 2           [0.745,1]                 [0.637,1]
-## 3           [0,0.247)              [0.167,0.38)
-## 4           [0.745,1]                 [0,0.167)
-## 5       [0.497,0.745)                 [0,0.167)
-## 6       [0.247,0.497)                 [0,0.167)</code></pre>
+<pre><code>##   MonthlyIncome_scaled NumCompaniesWorked_scaled TotalWorkingYears_scaled TrainingTimesLastYear_scaled
+## 1            0.4163104                 0.9428090                0.4472136                    0.0000000
+## 2            0.3635034                 0.3333333                0.5000000                    0.7071068
+## 3            0.1272355                 0.8164966                0.4183300                    0.7071068
+## 4            0.2021867                 0.3333333                0.4472136                    0.7071068
+## 5            0.2473708                 1.0000000                0.3872983                    0.7071068
+## 6            0.2154502                 0.0000000                0.4472136                    0.5773503
+##   YearsAtCompany_scaled YearsInCurrentRole_scaled YearsSinceLastPromotion_scaled YearsWithCurrManager_scaled
+## 1             0.3872983                 0.4714045                      0.0000000                   0.5423261
+## 2             0.5000000                 0.6236096                      0.2581989                   0.6416889
+## 3             0.0000000                 0.0000000                      0.0000000                   0.0000000
+## 4             0.4472136                 0.6236096                      0.4472136                   0.0000000
+## 5             0.2236068                 0.3333333                      0.3651484                   0.3429972
+## 6             0.4183300                 0.6236096                      0.4472136                   0.5940885
+##   Age_scaled DailyRate_scaled DistanceFromHome_scaled HourlyRate_scaled MonthlyRate_scaled
+## 1  0.5476190        0.7158196              0.00000000         0.9142857         0.69805260
+## 2  0.7380952        0.1267001              0.25000000         0.4428571         0.91600080
+## 3  0.4523810        0.9098067              0.03571429         0.8857143         0.01212608
+## 4  0.3571429        0.9234073              0.07142857         0.3714286         0.84581409
+## 5  0.2142857        0.3500358              0.03571429         0.1428571         0.58373821
+## 6  0.3333333        0.6463851              0.03571429         0.7000000         0.39229070
+##   PercentSalaryHike_scaled MonthlyIncome_discret NumCompaniesWorked_discret TotalWorkingYears_discret
+## 1               0.00000000         [0.272,0.484)                  [0.895,1]             [0.391,0.578)
+## 2               0.85714286         [0.272,0.484)                  [0,0.406)             [0.391,0.578)
+## 3               0.28571429             [0,0.272)              [0.694,0.895)             [0.391,0.578)
+## 4               0.00000000             [0,0.272)                  [0,0.406)             [0.391,0.578)
+## 5               0.07142857             [0,0.272)                  [0.895,1]                 [0,0.391)
+## 6               0.14285714             [0,0.272)                  [0,0.406)             [0.391,0.578)
+##   TrainingTimesLastYear_discret YearsAtCompany_discret YearsInCurrentRole_discret
+## 1                     [0,0.621)           [0.253,0.42)              [0.181,0.491)
+## 2                 [0.621,0.821)           [0.42,0.608)                [0.491,0.7)
+## 3                 [0.621,0.821)              [0,0.253)                  [0,0.181)
+## 4                 [0.621,0.821)           [0.42,0.608)                [0.491,0.7)
+## 5                 [0.621,0.821)              [0,0.253)              [0.181,0.491)
+## 6                     [0,0.621)           [0.253,0.42)                [0.491,0.7)
+##   YearsSinceLastPromotion_discret YearsWithCurrManager_discret   Age_discret DailyRate_discret
+## 1                       [0,0.153)                [0.424,0.687) [0.448,0.681)     [0.483,0.739)
+## 2                    [0.153,0.46)                [0.424,0.687)     [0.681,1]         [0,0.236)
+## 3                       [0,0.153)                    [0,0.424) [0.448,0.681)         [0.739,1]
+## 4                    [0.153,0.46)                    [0,0.424) [0.255,0.448)         [0.739,1]
+## 5                    [0.153,0.46)                    [0,0.424)     [0,0.255)     [0.236,0.483)
+## 6                    [0.153,0.46)                [0.424,0.687) [0.255,0.448)     [0.483,0.739)
+##   DistanceFromHome_discret HourlyRate_discret MonthlyRate_discret PercentSalaryHike_discret
+## 1                [0,0.105)          [0.763,1]       [0.497,0.745)                 [0,0.167)
+## 2            [0.105,0.284)      [0.252,0.508)           [0.745,1]                 [0.671,1]
+## 3                [0,0.105)          [0.763,1]           [0,0.247)             [0.167,0.394)
+## 4                [0,0.105)      [0.252,0.508)           [0.745,1]                 [0,0.167)
+## 5                [0,0.105)          [0,0.252)       [0.497,0.745)                 [0,0.167)
+## 6                [0,0.105)      [0.508,0.763)       [0.247,0.497)                 [0,0.167)</code></pre>
 <p>We can see that the values are numbers with many decimal places.
 However, in several variables, some of these values repeat because they
 represent the boundaries of the intervals used for discretization.</p>
@@ -1572,9 +1531,8 @@ total, we can determine the percentage of variance in the original data
 explained by each singular value multiplied by its corresponding right
 and left singular vectors.</p>
 <div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" tabindex="-1"></a><span class="fu">prop.table</span>(x_svd<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
-<pre><code>##  [1] 0.792658534 0.043357381 0.026183538 0.023775304 0.022497084 0.021906527
-##  [7] 0.018805973 0.013255432 0.012688123 0.010612725 0.006665778 0.004478507
-## [13] 0.001930596 0.001184499</code></pre>
+<pre><code>##  [1] 0.792658534 0.043357381 0.026183538 0.023775304 0.022497084 0.021906527 0.018805973 0.013255432
+##  [9] 0.012688123 0.010612725 0.006665778 0.004478507 0.001930596 0.001184499</code></pre>
 <p>We see that using only the first column of “u”, “v”, and the first
 value of “d”, we can explain almost 80% of the variance in the data.
 Therefore, with a significantly smaller amount of information, we can
@@ -1618,34 +1576,27 @@ selection based to find clearer groupings.</p>
 <span id="cb70-3"><a href="#cb70-3" tabindex="-1"></a>dat_norm <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(HR_data[<span class="dv">35</span><span class="sc">:</span><span class="dv">48</span>])</span>
 <span id="cb70-4"><a href="#cb70-4" tabindex="-1"></a><span class="co"># We show the first columns</span></span>
 <span id="cb70-5"><a href="#cb70-5" tabindex="-1"></a><span class="fu">head</span>(dat_norm)</span></code></pre></div>
-<pre><code>##   MonthlyIncome_scaled NumCompaniesWorked_scaled TotalWorkingYears_scaled
-## 1            0.4163104                 0.9428090                0.4472136
-## 2            0.3635034                 0.3333333                0.5000000
-## 3            0.1272355                 0.8164966                0.4183300
-## 4            0.2021867                 0.3333333                0.4472136
-## 5            0.2473708                 1.0000000                0.3872983
-## 6            0.2154502                 0.0000000                0.4472136
-##   TrainingTimesLastYear_scaled YearsAtCompany_scaled YearsInCurrentRole_scaled
-## 1                    0.0000000             0.3872983                 0.4714045
-## 2                    0.7071068             0.5000000                 0.6236096
-## 3                    0.7071068             0.0000000                 0.0000000
-## 4                    0.7071068             0.4472136                 0.6236096
-## 5                    0.7071068             0.2236068                 0.3333333
-## 6                    0.5773503             0.4183300                 0.6236096
-##   YearsSinceLastPromotion_scaled YearsWithCurrManager_scaled Age_scaled
-## 1                      0.0000000                   0.5423261  0.5476190
-## 2                      0.2581989                   0.6416889  0.7380952
-## 3                      0.0000000                   0.0000000  0.4523810
-## 4                      0.4472136                   0.0000000  0.3571429
-## 5                      0.3651484                   0.3429972  0.2142857
-## 6                      0.4472136                   0.5940885  0.3333333
-##   DailyRate_scaled DistanceFromHome_scaled HourlyRate_scaled MonthlyRate_scaled
-## 1        0.7158196              0.00000000         0.9142857         0.69805260
-## 2        0.1267001              0.25000000         0.4428571         0.91600080
-## 3        0.9098067              0.03571429         0.8857143         0.01212608
-## 4        0.9234073              0.07142857         0.3714286         0.84581409
-## 5        0.3500358              0.03571429         0.1428571         0.58373821
-## 6        0.6463851              0.03571429         0.7000000         0.39229070
+<pre><code>##   MonthlyIncome_scaled NumCompaniesWorked_scaled TotalWorkingYears_scaled TrainingTimesLastYear_scaled
+## 1            0.4163104                 0.9428090                0.4472136                    0.0000000
+## 2            0.3635034                 0.3333333                0.5000000                    0.7071068
+## 3            0.1272355                 0.8164966                0.4183300                    0.7071068
+## 4            0.2021867                 0.3333333                0.4472136                    0.7071068
+## 5            0.2473708                 1.0000000                0.3872983                    0.7071068
+## 6            0.2154502                 0.0000000                0.4472136                    0.5773503
+##   YearsAtCompany_scaled YearsInCurrentRole_scaled YearsSinceLastPromotion_scaled YearsWithCurrManager_scaled
+## 1             0.3872983                 0.4714045                      0.0000000                   0.5423261
+## 2             0.5000000                 0.6236096                      0.2581989                   0.6416889
+## 3             0.0000000                 0.0000000                      0.0000000                   0.0000000
+## 4             0.4472136                 0.6236096                      0.4472136                   0.0000000
+## 5             0.2236068                 0.3333333                      0.3651484                   0.3429972
+## 6             0.4183300                 0.6236096                      0.4472136                   0.5940885
+##   Age_scaled DailyRate_scaled DistanceFromHome_scaled HourlyRate_scaled MonthlyRate_scaled
+## 1  0.5476190        0.7158196              0.00000000         0.9142857         0.69805260
+## 2  0.7380952        0.1267001              0.25000000         0.4428571         0.91600080
+## 3  0.4523810        0.9098067              0.03571429         0.8857143         0.01212608
+## 4  0.3571429        0.9234073              0.07142857         0.3714286         0.84581409
+## 5  0.2142857        0.3500358              0.03571429         0.1428571         0.58373821
+## 6  0.3333333        0.6463851              0.03571429         0.7000000         0.39229070
 ##   PercentSalaryHike_scaled
 ## 1               0.00000000
 ## 2               0.85714286
@@ -1660,34 +1611,27 @@ selection based to find clearer groupings.</p>
 <span id="cb72-5"><a href="#cb72-5" tabindex="-1"></a>dat_est <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">scale</span>(dat_est))</span>
 <span id="cb72-6"><a href="#cb72-6" tabindex="-1"></a><span class="co"># We show the first columns</span></span>
 <span id="cb72-7"><a href="#cb72-7" tabindex="-1"></a><span class="fu">head</span>(dat_est)</span></code></pre></div>
-<pre><code>##   MonthlyIncome NumCompaniesWorked TotalWorkingYears TrainingTimesLastYear
-## 1    -0.1083127          2.1244130        -0.4214990            -2.1712429
-## 2    -0.2916193         -0.6778187        -0.1644554             0.1556541
-## 3    -0.9373347          1.3237753        -0.5500208             0.1556541
-## 4    -0.7633739         -0.6778187        -0.4214990             0.1556541
-## 5    -0.6446387          2.5247318        -0.6785426             0.1556541
-## 6    -0.7296013         -1.0781375        -0.4214990            -0.6199782
-##   YearsAtCompany YearsInCurrentRole YearsSinceLastPromotion
-## 1   -0.164557109        -0.06327437             -0.67891464
-## 2    0.488341541         0.76473737             -0.36858985
-## 3   -1.143905083        -1.16729002             -0.67891464
-## 4    0.161892216         0.76473737              0.25205973
-## 5   -0.817455758        -0.61528219             -0.05826506
-## 6   -0.001332446         0.76473737              0.25205973
-##   YearsWithCurrManager         Age  DailyRate DistanceFromHome HourlyRate
-## 1            0.2457504  0.44619856  0.7422739       -1.0105654  1.3826677
-## 2            0.8062671  1.32191535 -1.2973331       -0.1470997 -0.2405949
-## 3           -1.1555415  0.00834016  1.4138821       -0.8872132  1.2842882
-## 4           -1.1555415 -0.42951824  1.4609690       -0.7638609 -0.4865438
-## 5           -0.5950247 -1.08630583 -0.5241163       -0.8872132 -1.2735802
-## 6            0.5260087 -0.53898284  0.5018828       -0.8872132  0.6448211
-##   MonthlyRate PercentSalaryHike
-## 1   0.7257730       -1.15016269
-## 2   1.4883696        2.12858163
-## 3  -1.6742711       -0.05724792
-## 4   1.2427877       -1.15016269
-## 5   0.3257890       -0.87693400
-## 6  -0.3440822       -0.60370530</code></pre>
+<pre><code>##   MonthlyIncome NumCompaniesWorked TotalWorkingYears TrainingTimesLastYear YearsAtCompany YearsInCurrentRole
+## 1    -0.1083127          2.1244130        -0.4214990            -2.1712429   -0.164557109        -0.06327437
+## 2    -0.2916193         -0.6778187        -0.1644554             0.1556541    0.488341541         0.76473737
+## 3    -0.9373347          1.3237753        -0.5500208             0.1556541   -1.143905083        -1.16729002
+## 4    -0.7633739         -0.6778187        -0.4214990             0.1556541    0.161892216         0.76473737
+## 5    -0.6446387          2.5247318        -0.6785426             0.1556541   -0.817455758        -0.61528219
+## 6    -0.7296013         -1.0781375        -0.4214990            -0.6199782   -0.001332446         0.76473737
+##   YearsSinceLastPromotion YearsWithCurrManager         Age  DailyRate DistanceFromHome HourlyRate MonthlyRate
+## 1             -0.67891464            0.2457504  0.44619856  0.7422739       -1.0105654  1.3826677   0.7257730
+## 2             -0.36858985            0.8062671  1.32191535 -1.2973331       -0.1470997 -0.2405949   1.4883696
+## 3             -0.67891464           -1.1555415  0.00834016  1.4138821       -0.8872132  1.2842882  -1.6742711
+## 4              0.25205973           -1.1555415 -0.42951824  1.4609690       -0.7638609 -0.4865438   1.2427877
+## 5             -0.05826506           -0.5950247 -1.08630583 -0.5241163       -0.8872132 -1.2735802   0.3257890
+## 6              0.25205973            0.5260087 -0.53898284  0.5018828       -0.8872132  0.6448211  -0.3440822
+##   PercentSalaryHike
+## 1       -1.15016269
+## 2        2.12858163
+## 3       -0.05724792
+## 4       -1.15016269
+## 5       -0.87693400
+## 6       -0.60370530</code></pre>
 <div id="model-creation." class="section level2">
 <h2>5.1 - Model creation.</h2>
 <p>Now we begin to create the model. Since we are going to create 2
@@ -1838,13 +1782,11 @@ saved and display their results.</p>
 <span id="cb84-2"><a href="#cb84-2" tabindex="-1"></a>optics_100</span></code></pre></div>
 <pre><code>## OPTICS ordering/clustering for 1470 objects.
 ## Parameters: minPts = 100, eps = 7.32728910557963, eps_cl = NA, xi = NA
-## Available fields: order, reachdist, coredist, predecessor, minPts, eps,
-##                   eps_cl, xi</code></pre>
+## Available fields: order, reachdist, coredist, predecessor, minPts, eps, eps_cl, xi</code></pre>
 <div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" tabindex="-1"></a>optics_400</span></code></pre></div>
 <pre><code>## OPTICS ordering/clustering for 1470 objects.
 ## Parameters: minPts = 400, eps = 8.89343112855729, eps_cl = NA, xi = NA
-## Available fields: order, reachdist, coredist, predecessor, minPts, eps,
-##                   eps_cl, xi</code></pre>
+## Available fields: order, reachdist, coredist, predecessor, minPts, eps, eps_cl, xi</code></pre>
 <p>We observe that with a significant increase in the neighborhood
 criterion (minPts), the value of “eps” has increased only slightly. In
 the first model, it is 7.327, and in the second model, it is 8.8934 (an
@@ -2133,11 +2075,10 @@ this when analysing the results of the model.</p>
 <div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a>sumary_model</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## C5.0.default(x = train_dat[columns_for_model], y = train_dat$Attrition, rules
-##  = TRUE)
+## C5.0.default(x = train_dat[columns_for_model], y = train_dat$Attrition, rules = TRUE)
 ## 
 ## 
-## C5.0 [Release 2.07 GPL Edition]      Thu Aug 22 09:40:26 2024
+## C5.0 [Release 2.07 GPL Edition]      Sun Aug 25 02:34:14 2024
 ## -------------------------------
 ## 
 ## Class specified by attribute `outcome&#39;
@@ -2357,8 +2298,8 @@ useful in various datasets.</p>
 <span id="cb117-4"><a href="#cb117-4" tabindex="-1"></a>prunned_model</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## C5.0.default(x = train_dat[columns_for_model], y = train_dat$Attrition, rules
-##  = TRUE, control = C5.0Control(noGlobalPruning = FALSE, CF = 0.1))
+## C5.0.default(x = train_dat[columns_for_model], y = train_dat$Attrition, rules = TRUE, control
+##  = C5.0Control(noGlobalPruning = FALSE, CF = 0.1))
 ## 
 ## Rule-Based Model
 ## Number of samples: 1176 
@@ -2371,11 +2312,11 @@ useful in various datasets.</p>
 <div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" tabindex="-1"></a><span class="fu">summary</span>(prunned_model)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## C5.0.default(x = train_dat[columns_for_model], y = train_dat$Attrition, rules
-##  = TRUE, control = C5.0Control(noGlobalPruning = FALSE, CF = 0.1))
+## C5.0.default(x = train_dat[columns_for_model], y = train_dat$Attrition, rules = TRUE, control
+##  = C5.0Control(noGlobalPruning = FALSE, CF = 0.1))
 ## 
 ## 
-## C5.0 [Release 2.07 GPL Edition]      Thu Aug 22 09:40:31 2024
+## C5.0 [Release 2.07 GPL Edition]      Sun Aug 25 02:34:18 2024
 ## -------------------------------
 ## 
 ## Class specified by attribute `outcome&#39;
@@ -2481,23 +2422,17 @@ metrics that we can obtain for evaluating supervised models.</p>
 <div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" tabindex="-1"></a><span class="co"># The input of the function are all the values from the confusion matrix</span></span>
 <span id="cb122-2"><a href="#cb122-2" tabindex="-1"></a>calculateMetrics <span class="ot">&lt;-</span> <span class="cf">function</span>(TP, TN, FP, FN) {</span>
 <span id="cb122-3"><a href="#cb122-3" tabindex="-1"></a>    <span class="co"># The function will calculate all the measures used for evaluating supervised models</span></span>
-<span id="cb122-4"><a href="#cb122-4" tabindex="-1"></a>    accuracy <span class="ot">&lt;-</span> (TP <span class="sc">+</span> TN) <span class="sc">/</span> (TP <span class="sc">+</span> TN <span class="sc">+</span> FP <span class="sc">+</span> FN)</span>
-<span id="cb122-5"><a href="#cb122-5" tabindex="-1"></a>    specificity <span class="ot">&lt;-</span> TN <span class="sc">/</span> (TN <span class="sc">+</span> FP)</span>
-<span id="cb122-6"><a href="#cb122-6" tabindex="-1"></a>    presicion <span class="ot">&lt;-</span> TP <span class="sc">/</span> (TP <span class="sc">+</span> FP)</span>
-<span id="cb122-7"><a href="#cb122-7" tabindex="-1"></a>    sensitivity <span class="ot">&lt;-</span> TP <span class="sc">/</span> (TP <span class="sc">+</span> FN)</span>
-<span id="cb122-8"><a href="#cb122-8" tabindex="-1"></a>    F_Measure <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> ((presicion <span class="sc">*</span> sensitivity) <span class="sc">/</span> (presicion <span class="sc">+</span> sensitivity))</span>
-<span id="cb122-9"><a href="#cb122-9" tabindex="-1"></a>    </span>
+<span id="cb122-4"><a href="#cb122-4" tabindex="-1"></a>    accuracy <span class="ot">&lt;-</span> (TP <span class="sc">+</span> TN)<span class="sc">/</span>(TP <span class="sc">+</span> TN <span class="sc">+</span> FP <span class="sc">+</span> FN)</span>
+<span id="cb122-5"><a href="#cb122-5" tabindex="-1"></a>    specificity <span class="ot">&lt;-</span> TN<span class="sc">/</span>(TN <span class="sc">+</span> FP)</span>
+<span id="cb122-6"><a href="#cb122-6" tabindex="-1"></a>    presicion <span class="ot">&lt;-</span> TP<span class="sc">/</span>(TP <span class="sc">+</span> FP)</span>
+<span id="cb122-7"><a href="#cb122-7" tabindex="-1"></a>    sensitivity <span class="ot">&lt;-</span> TP<span class="sc">/</span>(TP <span class="sc">+</span> FN)</span>
+<span id="cb122-8"><a href="#cb122-8" tabindex="-1"></a>    F_Measure <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> ((presicion <span class="sc">*</span> sensitivity)<span class="sc">/</span>(presicion <span class="sc">+</span> sensitivity))</span>
+<span id="cb122-9"><a href="#cb122-9" tabindex="-1"></a></span>
 <span id="cb122-10"><a href="#cb122-10" tabindex="-1"></a>    <span class="co"># We print a formatted text showing all of these values</span></span>
-<span id="cb122-11"><a href="#cb122-11" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">&quot;Accuracy: &quot;</span>, <span class="fu">round</span>(accuracy, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb122-12"><a href="#cb122-12" tabindex="-1"></a>               </span>
-<span id="cb122-13"><a href="#cb122-13" tabindex="-1"></a>               <span class="st">&quot;Specificity: &quot;</span>, <span class="fu">round</span>(specificity, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb122-14"><a href="#cb122-14" tabindex="-1"></a>               </span>
-<span id="cb122-15"><a href="#cb122-15" tabindex="-1"></a>               <span class="st">&quot;Presicion: &quot;</span>, <span class="fu">round</span>(presicion, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb122-16"><a href="#cb122-16" tabindex="-1"></a>               </span>
-<span id="cb122-17"><a href="#cb122-17" tabindex="-1"></a>               <span class="st">&quot;Sensitivity: &quot;</span>, <span class="fu">round</span>(sensitivity, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb122-18"><a href="#cb122-18" tabindex="-1"></a>               </span>
-<span id="cb122-19"><a href="#cb122-19" tabindex="-1"></a>               <span class="st">&quot;F-Measure: &quot;</span>, <span class="fu">round</span>(F_Measure, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>))</span>
-<span id="cb122-20"><a href="#cb122-20" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb122-11"><a href="#cb122-11" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">&quot;Accuracy: &quot;</span>, <span class="fu">round</span>(accuracy, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="st">&quot;Specificity: &quot;</span>, <span class="fu">round</span>(specificity,</span>
+<span id="cb122-12"><a href="#cb122-12" tabindex="-1"></a>        <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="st">&quot;Presicion: &quot;</span>, <span class="fu">round</span>(presicion, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="st">&quot;Sensitivity: &quot;</span>, <span class="fu">round</span>(sensitivity,</span>
+<span id="cb122-13"><a href="#cb122-13" tabindex="-1"></a>        <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="st">&quot;F-Measure: &quot;</span>, <span class="fu">round</span>(F_Measure, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>))</span>
+<span id="cb122-14"><a href="#cb122-14" tabindex="-1"></a>}</span></code></pre></div>
 <p>Now we will use this function with the confusion matrix of this
 model.</p>
 <div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" tabindex="-1"></a><span class="co"># We make predictions with the pruned model</span></span>
@@ -2552,11 +2487,11 @@ the accuracy, which indicates that the model is better for predicting
 the negative class than the positive. On the other hand, the low values
 of the <strong>precision</strong> (0.41) and the
 <strong>sensitivity</strong> (0.33) are indicating that the model is not
-very good for detecting the positive class.</p>
+very good at detecting the positive class.</p>
 <p>This interpretation is confirmed by the value of the
 <strong>F-Measure</strong> (0.36), which is low. This indicates that the
 model has not a good balance between the number of cases correctly
-detected of each class (having a worse capacity for detecting the
+detected of each class (having a worse capacity at detecting the
 negative class).</p>
 <p>These results represent a limitation for the situations where the
 model can be used. For specific detections of the positive class
@@ -2710,10 +2645,10 @@ obtained values and the real values of the “Attrition” variable.</p>
 <div id="searching-a-balanced-model" class="section level2">
 <h2>8.3 - Searching a balanced model</h2>
 <p><strong>We start trying a cut-off point of 0.5</strong></p>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" tabindex="-1"></a>prediccion_data <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(predictions <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" tabindex="-1"></a>prediction_data <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(predictions <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
 <span id="cb132-2"><a href="#cb132-2" tabindex="-1"></a><span class="co"># We create a confusion matrix with the obtained predictions</span></span>
-<span id="cb132-3"><a href="#cb132-3" tabindex="-1"></a><span class="fu">table</span>(test_dat<span class="sc">$</span>Attrition, prediccion_data)</span></code></pre></div>
-<pre><code>##    prediccion_data
+<span id="cb132-3"><a href="#cb132-3" tabindex="-1"></a><span class="fu">table</span>(test_dat<span class="sc">$</span>Attrition, prediction_data)</span></code></pre></div>
+<pre><code>##    prediction_data
 ##       0   1
 ##   0 240   8
 ##   1  32  14</code></pre>
@@ -2725,46 +2660,48 @@ predicted by the last obtained decision tree. At the same time, the
 number of false positives has decreased (there were 22 in the previous
 model, and in this one, there are 8). Therefore, we obtained a slightly
 better model in this case.</p>
-<p>Nevertheless, we will test the model’s predictions with other cut-off
-values. Since this model is very good at predicting the negative cases,
-but not the positive ones, thereby lowering the requirement for
-considering an observation as a positive case.</p>
+<p>Nevertheless, we will test the predictions of the model with other
+cut-off point values. Since this model is very good at predicting the
+negative class but not the positive, we will decrease the cut-off point
+value, thereby lowering the requirement for considering an observation
+as a positive case.</p>
 <p><strong>We try a cut-off point of 0.25</strong></p>
-<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" tabindex="-1"></a>prediccion_data <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(predictions <span class="sc">&gt;</span> <span class="fl">0.25</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" tabindex="-1"></a>prediction_data <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(predictions <span class="sc">&gt;</span> <span class="fl">0.25</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
 <span id="cb134-2"><a href="#cb134-2" tabindex="-1"></a><span class="co"># We create a confusion matrix with the obtained predictions</span></span>
-<span id="cb134-3"><a href="#cb134-3" tabindex="-1"></a><span class="fu">table</span>(test_dat<span class="sc">$</span>Attrition, prediccion_data)</span></code></pre></div>
-<pre><code>##    prediccion_data
+<span id="cb134-3"><a href="#cb134-3" tabindex="-1"></a><span class="fu">table</span>(test_dat<span class="sc">$</span>Attrition, prediction_data)</span></code></pre></div>
+<pre><code>##    prediction_data
 ##       0   1
 ##   0 213  35
 ##   1  17  29</code></pre>
-<p>We can see that the number of cases predicted as positive has
-increased, and the number of cases predicted as negative has decreased.
-However, the number of correct cases predicted as 0 has not decreased a
-lot, but the number of cases correctly classified as 1, has practically
-duplicated. Nevertheless, the number of false positives, has increased
-in a higher proportion.</p>
-<p>Even so, depending on the use given to the model, this may not be
-something negative. If is more important to maximize the number of
-positive cases detected than minimizing the number of incorrectly cases
-classified as positive, this model is usefull.</p>
+<p>The number of cases predicted as positive has increased, and the
+number of cases predicted as negative has decreased. However, the number
+of correct cases predicted as class 0 has not decreased a lot, but the
+number of cases correctly classified as class 1 is twice as many as with
+the previous cut-off point value. Nevertheless, the number of false
+positives has increased by a higher proportion.</p>
+<p>Even so, depending on the use given to the model, this may not
+necessarily be negative. If it is more important to maximize the number
+of positive cases detected than minimizing the number of cases
+incorrectly classified as positive, then this model can be useful in
+this case.</p>
 <p><strong>We try a cut-off point of 0.2</strong></p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" tabindex="-1"></a><span class="co"># Probamos con 0.20</span></span>
-<span id="cb136-2"><a href="#cb136-2" tabindex="-1"></a>prediccion_data <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(predictions <span class="sc">&gt;</span> <span class="fl">0.2</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb136-3"><a href="#cb136-3" tabindex="-1"></a><span class="co"># We create a confusion matrix with the obtained predictions</span></span>
-<span id="cb136-4"><a href="#cb136-4" tabindex="-1"></a><span class="fu">table</span>(test_dat<span class="sc">$</span>Attrition, prediccion_data)</span></code></pre></div>
-<pre><code>##    prediccion_data
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" tabindex="-1"></a>prediction_data <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(predictions <span class="sc">&gt;</span> <span class="fl">0.2</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb136-2"><a href="#cb136-2" tabindex="-1"></a><span class="co"># We create a confusion matrix with the obtained predictions</span></span>
+<span id="cb136-3"><a href="#cb136-3" tabindex="-1"></a><span class="fu">table</span>(test_dat<span class="sc">$</span>Attrition, prediction_data)</span></code></pre></div>
+<pre><code>##    prediction_data
 ##       0   1
 ##   0 195  53
 ##   1  14  32</code></pre>
-<p>In this case, the increment of true positives is insignificant (only
-3 more cases were detected), compared with the decrease of true
-negatives detected (27 less cases were correctly detected). We can not
-say that this model is better than the previous one.</p>
+<p>In this case, the increase of true positives is insignificant, with
+only 3 more cases than with the previous model, compared with the
+decrease in true negatives detected, which is 27 fewer cases correctly
+identified. We can not say that this model is better than the previous
+one.</p>
 </div>
 <div id="evaluating-the-selected-model" class="section level2">
 <h2>8.4 - Evaluating the selected model</h2>
 <p>We will calculate the metrics of the second confusion matrix that we
-obtained (that one that had the cut-off point of 0.25).</p>
+have obtained, the one with a cut-off point of 0.25.</p>
 <div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" tabindex="-1"></a><span class="co"># First, we will save as variables each type of correct and incorrect predictions</span></span>
 <span id="cb138-2"><a href="#cb138-2" tabindex="-1"></a></span>
 <span id="cb138-3"><a href="#cb138-3" tabindex="-1"></a><span class="co"># True positives</span></span>
@@ -2783,20 +2720,66 @@ obtained (that one that had the cut-off point of 0.25).</p>
 ## Presicion: 0.5
 ## Sensitivity: 0.67
 ## F-Measure: 0.57</code></pre>
-<p>We can see that the metrics of this model are better than the
-obtained with the last decision tree. The single metric that has
-decreased, is specificity (has decreased from 0.91 to 0.86). All the
-rest metrics are higher, and some of them have significant increases,
-like for example, the sensitivity (has increased from 0.33 to 0.67), and
-the F-Measure (has increased from 0.36 to 0.57). We can attribute this
-increase to the fact that the number of true negatives has not decreased
-hugely, but the number of true positives has duplicated. This means that
-the relation between the number of true positives and true negatives is
-better in this model.</p>
+<p>We can see that the metrics of this model are better those obtained
+with the last decision tree. The only metric that has decreased, is
+specificity (it has decreased from 0.91 to 0.86). All the other metrics
+are higher, and some of them have significant increases, such as, the
+sensitivity (it has increased from 0.33 to 0.67), and the F-Measure (has
+increased from 0.36 to 0.57). We can attribute this increase to the fact
+that the number of true negatives has not decreased hugely, but the
+number of true positives has doubled. This indicates that the balance
+between true positives and true negatives has improved in this
+model.</p>
 </div>
 </div>
 <div id="conclusions-and-possible-improvements-to-the-project" class="section level1">
 <h1>9 - CONCLUSIONS AND POSSIBLE IMPROVEMENTS TO THE PROJECT</h1>
+<p>First of all, the <strong>exploratory data analysis</strong> in this
+project was very general, since we focused on understanding the nature
+of all variables, and their general characteristics and interrelations.
+This is something useful for understanding the generalities of the
+problem, and can be useful as a first approach. However, doing a more
+specific analysis focusing on the target variable can also be useful. If
+a better model is to be developed (with a higher capacity of detecting
+the class 1 and not only the class 0), it would be necessary to analyse
+the characteristics of the variables considering both classes of the
+target variable, in order to better guide the creation of the model.</p>
+<p>Related to the <strong>Singular Value Decomposition
+technique</strong>, since this is useful for understanding the behavior
+of the data in terms of the variance explained by the variables, a
+deeper exploration should be conducted, in order to understand which
+variables are the most important in this regard. Complementary
+techniques could also be used to explore the dimensionality reduction
+from multiple perspectives. The techniques include, TSNE or UMAP, as
+those permit finding possible clusters in a low dimensional space.
+Additionally, PCA would be a good option, as this is a widely accepted
+and used technique for this purpose.</p>
+<p>On the other hand, a similar issue to what occurred in the EDA arises
+in the sections where <strong>clustering techniques</strong> are
+applied. The approach was very generic, as we utilized the techniques on
+all quantitative variables, which only permits the identification of
+clusters if they are highly apparent in the data. In this case, the
+clusters are not readily apparent and may only be discovered through a
+more focused analysis of specific target variables that could
+potentially form clusters. It would be beneficial to use clustering
+techniques with pre-defined hypotheses about the types of clusters
+expected, selecting only the relevant variables based on these
+hypotheses. This approach could improve the identification of distinct
+clusters. Nevertheless, the techniques employed in this project helped
+us assess the clarity of the data structures, revealing that the
+structures were not very clear with the methods used.</p>
+<p>Regarding the <strong>unsupervised learning techniques</strong> used
+(decision trees and logistic regression), although we identified a
+relatively acceptable model—particularly the logistic regression with
+the last cut-off point value—there is significant room for improvement.
+Firstly, there are multiple unsupervised learning techniques with
+various parameters that can be manipulated. Testing different
+combinations of these parameters during model training could yield
+better results. A more in-depth exploration of models and parameter
+combinations using a grid search strategy should be conducted to find
+the optimal model for this use case. Examples of models not explored in
+this project include support vector machines, random forests, neural
+networks, and ensemble models combining multiple techniques.</p>
 </div>
 
 

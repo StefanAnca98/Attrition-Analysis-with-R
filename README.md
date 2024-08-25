@@ -5,4 +5,6 @@ The objective of this project will be to describe and explain how job abandonmen
 
 It is important to note that some steps in this project are designed to showcase a broad range of data science techniques, even if not all are directly interconnected or essential for the final outcome. Certain analyses were conducted to enhance understanding of the problem, and some preprocessing steps were taken to prepare the data for potential future scenarios. This approach was intentionally chosen to demonstrate a variety of data science methods and skills.
 
+It is also important to note that if the project is visualized on a mobile device, the text in the code blocks may extend beyond the edges. When viewing this project on a mobile device, it is recommended to hold it in a **horizontal position**, as less text will extend beyond the edges in this orientation.
+
 To visualize the project as an HTML page click this link: https://stefananca98.github.io/Attrition-Analysis-with-R/
